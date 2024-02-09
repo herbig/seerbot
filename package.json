@@ -1,0 +1,21 @@
+{
+  "name": "seerbot",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "devStart": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.0.3",
+    "node-fetch": "^3.3.2",
+    "nodemon": "^3.0.3",
+    "remove-accents": "^0.5.0"
+  }
+}
