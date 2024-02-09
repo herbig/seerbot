@@ -75,8 +75,8 @@ client.on(Events.MessageCreate, msg => {
     // if it's us or another bot, don't do anything
     if (msg.author.bot) return;
 
-    // match on the pattern [[SOMETEXT]]
-    const match = msg.content.match(/\[\[(.*?)\]\]/);
+    // match on the pattern {{SOMETEXT}}
+    const match = msg.content.match(/\{\{(.*?)\}\}/);
 
     if (match) {
 
