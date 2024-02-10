@@ -74,7 +74,7 @@ client.on(Events.MessageCreate, msg => {
                 .setColor('#2B2D31');
             msg.reply({ embeds: [embed] });
         } else {
-            msg.reply(`I couldn\'t find \"${match[1]}\", did you mean to say \"Fellbog Frog Men\"?`);
+            msg.reply(`I couldn\'t find \"${match[1]}\", did you mean to say \"Felbog Frog Men\"?`);
         }
     }
 });
