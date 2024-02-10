@@ -48,8 +48,6 @@ fs.readFile(path.join(dirname(fileURLToPath(import.meta.url)), 'card_list.txt'),
     // filter any empty lines
     const filteredCardNames = cardNames.filter(name => name.trim() !== '');
 
-    console.log(filteredCardNames);
-
     filteredCardNames.forEach(name => {
         cardMap.set(normalizeCardName(name), name);
     });
