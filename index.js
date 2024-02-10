@@ -1,10 +1,5 @@
 import { Client, Events, GatewayIntentBits, EmbedBuilder } from 'discord.js';
-import removeAccents from 'remove-accents';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import { readFile } from 'fs';
+import { normalizeCardName, loadCards } from './util.js'
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -16,41 +11,11 @@ const client = new Client({
     ]
 });
 
-// Performs the following modifications:
-// 1. Remove accents, on cards like Maelström
-// 2. Lowercase it
-// 3. Change spaces and dashes to underscores
-// 4. Remove non alpha characters like commas
-//
-// This allows users to query for cards with
-// or without using the accents or apostrophes, commas, etc.
-function normalizeCardName(name) {
-    let formatted = removeAccents(name.trim()).toLocaleLowerCase();
-    // Replace spaces or dashes with underscores
-    formatted = formatted.replace(/[\s\-]+/g, '_');
-    // Remove all non-alphabetic characters except for underscores
-    formatted = formatted.replace(/[^a-zA-Z_]/g, '');
-    return formatted;
-}
+let cardMap = new Map();
 
-// map of the normalized card name to its display name
-const cardMap = new Map();
-
-fs.readFile(path.join(dirname(fileURLToPath(import.meta.url)), 'card_list.txt'), 
-    { encoding: 'utf-8' }, (err, data) => {
-    if (err) {
-        console.error('Error reading the file:', err);
-        return;
-    }
-
-    const cardNames = data.split(/\r?\n/);
-
-    // filter any empty lines
-    const filteredCardNames = cardNames.filter(name => name.trim() !== '');
-
-    filteredCardNames.forEach(name => {
-        cardMap.set(normalizeCardName(name), name);
-    });
+// load the card data when the app starts
+client.on(Events.ClientReady, async () => {
+    cardMap = await loadCards();
 });
 
 client.on(Events.MessageCreate, msg => {
