@@ -10,6 +10,10 @@ import fs from 'fs';
 // A simple script to download card images from curiosa.io, for self hosting.
 // Run in terminal via "./scrape_images.js"
 //
+// TODO This only works for beta, for downloading alpha switch 'bet' to 'alp' at the end of the URL
+// this should ultimately dynamically support any set but I just manually downloaded the few remaining 
+// alpha cards for now.
+//
 
 const curiosaImgUrl = 'https://curiosa.io/_next/image?w=750&q=75&url=https%3A%2F%2Fd27a44hjr9gen3.cloudfront.net%2Fbet%2F';
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -37,7 +41,7 @@ async function downloadCardImage(normalizedName) {
       writer.on('error', reject);
     });
   } catch (error) {
-    console.error(`Error downloading ${url}: ${error.message}`);
+    console.error(`Error downloading ${normalizedName}: ${error.message}`);
   }
 }
 

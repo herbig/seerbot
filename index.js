@@ -29,18 +29,24 @@ client.on(Events.MessageCreate, msg => {
     if (match) {
 
         const normalized = normalizeCardName(match[1]);
+
+        // if the query is '{{}}' don't respond at all
+        if (normalized === '') return;
+
         const card = cardMap.get(normalized);
 
+        const embed = new EmbedBuilder();
+
         if (card !== undefined) {
-            const embed = new EmbedBuilder()
-                .setTitle(card)
+            embed.setTitle(card)
                 .setDescription(process.env.CURIOSA_URL + normalized)
                 .setImage(process.env.IMG_URL + normalized + '.png')
-                .setColor('#2B2D31');
-            msg.reply({ embeds: [embed] });
+                .setColor('#674071');
         } else {
-            msg.reply(`I couldn\'t find \"${match[1]}\", did you mean to say \"Felbog Frog Men\"?`);
+            embed.setDescription(`No card found for \"${match[1]}\"`)
+                .setColor('#3F4248');
         }
+        msg.reply({ embeds: [embed] });
     }
 });
 
