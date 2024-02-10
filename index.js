@@ -1,8 +1,9 @@
 import { Client, Events, GatewayIntentBits, EmbedBuilder } from 'discord.js';
 import removeAccents from 'remove-accents';
-import fetch from 'node-fetch';
 import dotenv from 'dotenv';
 dotenv.config();
+const fs = require('fs');
+const path = require('path');
 
 const client = new Client({
 	intents: [
@@ -12,63 +13,44 @@ const client = new Client({
     ]
 });
 
-// Remove accents on cards like Maelström and lowercase it, to be used as a
-// reference key in the card map. This allows users to query for cards with
-// or without using the accents.
+// Performs the following modifications:
+// 1. Remove accents, on cards like Maelström
+// 2. Lowercase it
+// 3. Change spaces to underscores
+// 4. Remove non alpha characters like commas
+//
+// This allows users to query for cards with
+// or without using the accents or apostrophes, commas, etc.
 function normalizeCardName(name) {
-    return removeAccents(name.trim()).toLocaleLowerCase();
+    let formatted = removeAccents(name.trim()).toLocaleLowerCase();
+    // Replace spaces with underscores
+    formatted = inputString.replace(/\s+/g, '_');
+    // Remove all non-alphabetic characters except for underscores
+    formatted = formatted.replace(/[^a-zA-Z_]/g, '');
+    return formatted;
 }
 
-// map of the normalized card name to its data object
+// map of the normalized card name to its display name
 const cardMap = new Map();
 
-// Initializes the card data.  This will only occur once at the start of the
-// bot server, so we'll need to restart the app once a new set comes out and 
-// the API is updated with it, but this should be fine for now.
-async function fetchCards() {
-    
-    // if the api fails for whatever reason, we'll give it a few more tries
-    let attempts = 0;
-    const tries = 3;
-
-    while (attempts < tries) {
-        try {
-            const response = await fetch(`${process.env.SORC_ENDPOINT}?apiKey=${process.env.SORC_KEY}`);
-
-            if (!response.ok) {
-                throw new Error(`API call failed with status ${response.status}.`);
-            }
-
-            const cards = await response.json();
-
-            cards.forEach(card => {
-                cardMap.set(normalizeCardName(card.name), card);
-            });
-
-            break;
-
-        } catch (error) {
-            attempts++;
-            // wait a few seconds before the next attempt
-            await new Promise(resolve => setTimeout(resolve, 5000));
-        }
+fs.readFile(path.join(__dirname, 'card_list.txt'), 
+    { encoding: 'utf-8' }, (err, data) => {
+    if (err) {
+        console.error('Error reading the file:', err);
+        return;
     }
-}
 
-// fetch and cache the card data when the app starts
-client.on(Events.ClientReady, async () => {
-    await fetchCards();
+    const cardNames = data.split(/\r?\n/);
+
+    // filter any empty lines
+    const filteredCardNames = cardNames.filter(name => name.trim() !== '');
+
+    console.log(filteredCardNames);
+
+    filteredCardNames.forEach(name => {
+        cardMap.set(normalizeCardName(name), name);
+    });
 });
-
-// a list of colors for the embedded image message response
-// TODO update keys depending on what the api response looks like
-const elementColors = {
-    Fire: '#843223',
-    Water: '#295E76',
-    Earth: '#3C3731',
-    Air: '#4A4B50',
-};
-const elementless = '#191510';
 
 client.on(Events.MessageCreate, msg => {
 
@@ -80,14 +62,15 @@ client.on(Events.MessageCreate, msg => {
 
     if (match) {
 
-        const card = cardMap.get(normalizeCardName(match[1]));
+        const normalized = normalizeCardName(match[1]);
+        const card = cardMap.get(normalized);
 
         if (card !== undefined) {
             const embed = new EmbedBuilder()
-                .setTitle(card.name)
-                .setDescription(card.url) // TODO curiosa link
-                .setImage(card.imageUrl)
-                .setColor(elementColors[card.element] || elementless);
+                .setTitle(card)
+                .setDescription(process.env.CURIOSA_URL + normalized)
+                .setImage(process.env.IMG_URL + normalized + '.png')
+                .setColor('#191510'); // TODO do we even need to set this?
             msg.reply({ embeds: [embed] });
         } else {
             msg.reply(`I couldn\'t find \"${match[1]}\", did you mean to say \"Fellbog Frog Men\"?`);
