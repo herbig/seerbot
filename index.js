@@ -24,29 +24,38 @@ client.on(Events.MessageCreate, msg => {
     if (msg.author.bot) return;
 
     // match on the pattern {{SOMETEXT}}
-    const match = msg.content.match(/\{\{(.*?)\}\}/);
+    const matches = msg.content.match(/\{\{(.*?)\}\}/g);
 
-    if (match) {
+    if (matches) {
 
-        const normalized = normalizeCardName(match[1]);
+        let embeds = new Array();
 
-        // if the query is '{{}}' don't respond at all
-        if (normalized === '') return;
+        for (let i = 0; i < matches.length; i++) {
+            const normalized = normalizeCardName(matches[i]);
 
-        const card = cardMap.get(normalized);
+            // if the query is '{{}}' don't respond to it
+            if (normalized === '') continue;
+    
+            const card = cardMap.get(normalized);
+    
+            const embed = new EmbedBuilder();
+    
+            if (card !== undefined) {
+                embed.setTitle(card)
+                    .setDescription(process.env.CURIOSA_URL + normalized)
+                    .setImage(process.env.IMG_URL + normalized + '.png')
+                    .setColor('#674071');
+            } else {
+                embed.setDescription(`No card found for \"${matches[i]
+                    .replace('{{', '').replace('}}', '')}\"`)
+                    .setColor('#3F4248');
+            }
 
-        const embed = new EmbedBuilder();
+            embeds.push(embed);
+        } 
 
-        if (card !== undefined) {
-            embed.setTitle(card)
-                .setDescription(process.env.CURIOSA_URL + normalized)
-                .setImage(process.env.IMG_URL + normalized + '.png')
-                .setColor('#674071');
-        } else {
-            embed.setDescription(`No card found for \"${match[1]}\"`)
-                .setColor('#3F4248');
-        }
-        msg.reply({ embeds: [embed] });
+        if (embeds.length > 0)
+            msg.channel.send({ embeds: embeds });
     }
 });
 
