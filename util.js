@@ -22,3 +22,31 @@ export async function loadCards() {
     const data = await readFile(filePath, { encoding: 'utf-8' });
     return data.split(/\r?\n/);
 }
+
+/**
+ * Sets an interval to randomly update the Discord activity status of the bot.
+ */
+export function randomizeActivity(client) {
+
+    const activities = [
+        "for ante",
+        "Grey Wolves",
+        "Wicker Manikin",
+        "at Death's Door",
+        "Deathspeaker",
+        "four Cores",
+        "Muck Lampreys",
+        "Infiltrate",
+        "Grapple Shot",
+    ];
+
+    function setRandom() {
+        client.user.setActivity(activities[Math.floor(Math.random() * activities.length)]);
+    };
+
+    setRandom();
+
+    setInterval(() => {
+        setRandom();
+    }, 1800_000); // 30 minute interval
+}

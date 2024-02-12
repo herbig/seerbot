@@ -1,5 +1,5 @@
 import { Client, Events, GatewayIntentBits, EmbedBuilder } from 'discord.js';
-import { cardSlug, loadCards } from './util.js'
+import { cardSlug, loadCards, randomizeActivity } from './util.js'
 import { FuzzySearch } from './fuzzysearch.js';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -12,6 +12,10 @@ const client = new Client({
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent,
     ]
+});
+
+client.on(Events.ClientReady, async () => {
+    randomizeActivity(client);
 });
 
 client.on(Events.MessageCreate, msg => {
