@@ -36,7 +36,6 @@ export function randomizeActivity(client) {
         "Deathspeaker",
         "four Cores",
         "Muck Lampreys",
-        "Infiltrate",
         "Grapple Shot",
     ];
 
@@ -48,5 +47,5 @@ export function randomizeActivity(client) {
 
     setInterval(() => {
         setRandom();
-    }, 1800_000); // 30 minute interval
+    }, 600_000); // 10 minute interval
 }
