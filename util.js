@@ -5,11 +5,11 @@ import { dirname } from 'path';
 import path from 'path';
 
 /**
- * Normalize the card name to the same identifier slug that curiosa.io uses.
+ * Normalize the card name to the same identifier that curiosa.io uses.
  */
-export function normalizeCardName(name) {
+export function cardSlug(name) {
     return removeAccents(name)
-        .toLocaleLowerCase()
+        .toLowerCase()
         .replace(/[\s\-]+/g, '_') // Replace spaces or dashes with underscores
         .replace(/[^a-zA-Z_]/g, ''); // Remove non-alphabetic characters (except for underscores)
 }

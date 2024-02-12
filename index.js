@@ -1,8 +1,10 @@
 import { Client, Events, GatewayIntentBits, EmbedBuilder } from 'discord.js';
-import { normalizeCardName, loadCards } from './util.js'
+import { cardSlug, loadCards } from './util.js'
 import { FuzzySearch } from './fuzzysearch.js';
 import dotenv from 'dotenv';
 dotenv.config();
+
+const fuzzySearch = new FuzzySearch(await loadCards());
 
 const client = new Client({
 	intents: [
@@ -11,8 +13,6 @@ const client = new Client({
         GatewayIntentBits.MessageContent,
     ]
 });
-
-const fuzzySearch = new FuzzySearch(await loadCards());
 
 client.on(Events.MessageCreate, msg => {
 
@@ -26,21 +26,20 @@ client.on(Events.MessageCreate, msg => {
 
         let embeds = new Array();
 
-        for (let i = 0; i < matches.length; i++) {
-
-            const query = matches[i].replace('{{', '').replace('}}', '').trim();
+        matches.forEach((match) => {
+            const query = match.replace('{{', '').replace('}}', '').trim();
 
             // if query is '{{}}' don't respond to it
-            if (query === '') continue;
+            if (query === '') return;
 
-            const match = fuzzySearch.search(query);
+            const cardMatch = fuzzySearch.search(query);
             const embed = new EmbedBuilder();
     
-            if (match !== undefined) {
-                const normalized = normalizeCardName(match);
-                embed.setTitle(match)
-                    .setDescription(process.env.CURIOSA_URL + normalized)
-                    .setImage(process.env.IMG_URL + normalized + '.png')
+            if (cardMatch !== undefined) {
+                const slug = cardSlug(cardMatch);
+                embed.setTitle(cardMatch)
+                    .setDescription(process.env.CURIOSA_URL + slug)
+                    .setImage(process.env.IMG_URL + slug + '.png')
                     .setColor('#674071');
             } else {
                 embed.setDescription(`No card found for \"${query}\"`)
@@ -48,7 +47,7 @@ client.on(Events.MessageCreate, msg => {
             }
 
             embeds.push(embed);
-        } 
+        });
 
         if (embeds.length > 0)
             msg.channel.send({ embeds: embeds });
