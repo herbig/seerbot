@@ -9,12 +9,7 @@ export class FuzzySearch {
     fuse;
 
     constructor(searchList) { 
-        // https://www.fusejs.io/api/options.html
-        const opts = {
-            includeScore: true,
-            threshold: 0.3,
-        };
-        this.fuse = new Fuse(searchList, opts);
+        this.fuse = new Fuse(searchList, { threshold: 0.3 });
     }
 
     search(searchPattern) {
