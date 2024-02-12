@@ -1,5 +1,6 @@
 import { Client, Events, GatewayIntentBits, EmbedBuilder } from 'discord.js';
 import { normalizeCardName, loadCards } from './util.js'
+import { FuzzySearch } from './fuzzysearch.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -11,12 +12,7 @@ const client = new Client({
     ]
 });
 
-let cardMap = new Map();
-
-// load the card data when the app starts
-client.on(Events.ClientReady, async () => {
-    cardMap = await loadCards();
-});
+const fuzzySearch = new FuzzySearch(await loadCards());
 
 client.on(Events.MessageCreate, msg => {
 
@@ -31,23 +27,23 @@ client.on(Events.MessageCreate, msg => {
         let embeds = new Array();
 
         for (let i = 0; i < matches.length; i++) {
-            const normalized = normalizeCardName(matches[i]);
 
-            // if the query is '{{}}' don't respond to it
-            if (normalized === '') continue;
-    
-            const card = cardMap.get(normalized);
-    
+            const query = matches[i].replace('{{', '').replace('}}', '').trim();
+
+            // if query is '{{}}' don't respond to it
+            if (query === '') continue;
+
+            const match = fuzzySearch.search(query);
             const embed = new EmbedBuilder();
     
-            if (card !== undefined) {
-                embed.setTitle(card)
+            if (match !== undefined) {
+                const normalized = normalizeCardName(match);
+                embed.setTitle(match)
                     .setDescription(process.env.CURIOSA_URL + normalized)
                     .setImage(process.env.IMG_URL + normalized + '.png')
                     .setColor('#674071');
             } else {
-                embed.setDescription(`No card found for \"${matches[i]
-                    .replace('{{', '').replace('}}', '')}\"`)
+                embed.setDescription(`No card found for \"${query}\"`)
                     .setColor('#3F4248');
             }
 

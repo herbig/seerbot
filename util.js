@@ -1,7 +1,7 @@
 import removeAccents from 'remove-accents';
+import { readFile } from 'fs/promises';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { readFile } from 'fs/promises';
 import path from 'path';
 
 /**
@@ -25,22 +25,11 @@ export function normalizeCardName(name) {
 }
 
 /**
- * Loads the cards from the full list and maps them to their normalized name.
+ * Loads cards from a flat text file to an array.
  */
 export async function loadCards() {
-    const cardMap = new Map();
     const filePath = path.join(
         dirname(fileURLToPath(import.meta.url)), 'card_list.txt');
-
-    try {
-        const data = await readFile(filePath, { encoding: 'utf-8' });
-        const cardNames = data.split(/\r?\n/);
-        cardNames.forEach(name => {
-            cardMap.set(normalizeCardName(name), name);
-        });
-    } catch (err) {
-        console.error('Error reading the file:', err);
-    }
-
-    return cardMap;
+    const data = await readFile(filePath, { encoding: 'utf-8' });
+    return data.split(/\r?\n/);
 }

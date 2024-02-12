@@ -20,6 +20,6 @@ CURIOSA_URL='https://curiosa.io/cards/'
 ```
 
 ### TODO
-- TCGPlayer price lookup
-- Rotate Sites
+- price lookup (TCGPlayer no longer giving API access...)
 - alternate art / promos? look at what Scryfall does
+- rulings (need Curiosa API probably)
