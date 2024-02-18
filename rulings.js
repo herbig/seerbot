@@ -1,12 +1,11 @@
-import { By } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome.js';
+import { By } from 'selenium-webdriver';
 import { cardSlug } from './util.js';
 
 export class Rulings {
 
-    faqUrl = 'https://curiosa.io/faqs';
-    
-    rulings = new Map()
+    #faqUrl = 'https://curiosa.io/faqs';
+    #rulings;
 
     constructor() { 
         // update when the app starts
@@ -31,7 +30,7 @@ export class Rulings {
         );
 
         try {
-            await driver.get(this.faqUrl);
+            await driver.get(this.#faqUrl);
     
             // give it a while to load, we're not in a rush
             await driver.sleep(5_000); // 5 seconds
@@ -57,21 +56,21 @@ export class Rulings {
                 updatedRulings.set(cardSlug(cardName), faqData);
             }
     
-            this.rulings = updatedRulings;
+            this.#rulings = updatedRulings;
 
         } catch (error) {
             // make sure the map is empty
-            this.rulings = new Map();
+            this.#rulings = new Map();
         } finally {
-            await driver.quit();
+            driver.quit();
         }
     }
 
     getRulings(slug) {
-        return this.rulings.get(slug);
+        return this.#rulings.get(slug);
     }
 
     isInitialized() {
-        return this.rulings.size > 0;
+        return this.#rulings.size > 0;
     }
 }

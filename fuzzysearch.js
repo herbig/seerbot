@@ -10,20 +10,21 @@ import path from 'path';
  */
 export class FuzzyCardSearch {
 
-    fuse;
+    #cardFile = 'card_list.txt';
+    #fuse;
 
-    constructor(searchList) {
+    constructor() {
         this.#initialize();
     }
 
     async #initialize() {
-        const filePath = path.join(dirname(fileURLToPath(import.meta.url)), 'card_list.txt');
+        const filePath = path.join(dirname(fileURLToPath(import.meta.url)), this.#cardFile);
         const data = await readFile(filePath, { encoding: 'utf-8' });
-        this.fuse = new Fuse(data.split(/\r?\n/), { threshold: 0.3 });
+        this.#fuse = new Fuse(data.split(/\r?\n/), { threshold: 0.3 });
     }
 
     search(searchPattern) {
-        const result = this.fuse.search(searchPattern);
+        const result = this.#fuse.search(searchPattern);
         return result.length > 0 ? result[0].item : undefined;
     }
 }
