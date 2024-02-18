@@ -1,11 +1,15 @@
 import { Client, Events, GatewayIntentBits, EmbedBuilder } from 'discord.js';
-import { cardSlug, loadCards, randomizeActivity } from './util.js'
-import { FuzzySearch } from './fuzzysearch.js';
-import dotenv from 'dotenv';
+import { cardSlug, randomizeActivity } from './util.js'
+import { FuzzyCardSearch } from './fuzzysearch.js';
 import { Rulings } from './rulings.js';
+import dotenv from 'dotenv';
 dotenv.config();
 
-const fuzzySearch = new FuzzySearch(await loadCards());
+// the left bar color of the Discord embed
+const colorSuccess = '#674071';
+const colorFail = '#3F4248';
+
+const fuzzySearch = new FuzzyCardSearch();
 const rulings = new Rulings();
 
 const client = new Client({
@@ -41,7 +45,7 @@ client.on(Events.MessageCreate, msg => {
                 // if query is '{{}}' don't respond to it
                 return;
             } else if (query.startsWith('?')) {
-                query = query.substring(1, query.length);
+                query = query.substring(1, query.length).trim();
                 queryCode = '?';
             }
 
@@ -51,22 +55,22 @@ client.on(Events.MessageCreate, msg => {
             if (cardMatch !== undefined) {
 
                 const slug = cardSlug(cardMatch);
+
                 embed.setTitle(`Rulings for ${cardMatch}`)
                     .setURL(process.env.CURIOSA_URL + slug);
 
                 if (queryCode === '?') {
-                    // if the FAQ scraping breaks, tell them
-                    // to give me a heads up 
-                    if (!rulings.rulingsInitialized()) {
+                    // if the FAQ scraping breaks, tell them to give me a heads up 
+                    if (!rulings.isInitialized()) {
                         embed.setDescription('Oops, something\'s up with rulings. Please ping @herbig to fix it.')
-                            .setColor('#3F4248');
+                            .setColor(colorFail);
                     } else {
 
                         const faqs = rulings.getRulings(slug);
                         let description = '';
 
                         if (faqs === undefined || faqs.length === 0) {
-                            description = `No rulings for ${cardMatch}.`;
+                            description = `No rulings available for ${cardMatch}.`;
                         } else {
                             for (let i = 0; i < faqs.length; i++) {
                                 if (i % 2 === 0) {
@@ -78,17 +82,17 @@ client.on(Events.MessageCreate, msg => {
                         }
 
                         embed.setDescription(description)
-                            .setColor('#674071');
+                            .setColor(colorSuccess);
                     }
                 } else {
                     embed.setTitle(cardMatch)
                         .setDescription(process.env.CURIOSA_URL + slug)
                         .setImage(process.env.IMG_URL + slug + '.png')
-                        .setColor('#674071');
+                        .setColor(colorSuccess);
                 }
             } else {
                 embed.setDescription(`No card found for \"${query}\"`)
-                    .setColor('#3F4248');
+                    .setColor(colorFail);
             }
 
             embeds.push(embed);

@@ -4,19 +4,21 @@ import { cardSlug } from './util.js';
 
 export class Rulings {
 
+    faqUrl = 'https://curiosa.io/faqs';
+    
     rulings = new Map()
 
     constructor() { 
         // update when the app starts
-        this.loadRulings();
+        this.#loadRulings();
 
         setInterval(() => {
             // update again every 2 days
-            this.loadRulings();
+            this.#loadRulings();
         }, 2 * 24 * 60 * 60 * 1000);
     }
 
-    async loadRulings() {
+    async #loadRulings() {
 
         const options = new chrome.Options()
             .addArguments('--headless')
@@ -29,15 +31,15 @@ export class Rulings {
         );
 
         try {
-            await driver.get('https://curiosa.io/faqs');
+            await driver.get(this.faqUrl);
     
             // give it a while to load, we're not in a rush
-            await driver.sleep(2_000);
-    
-            const updatedRulings = new Map();
+            await driver.sleep(5_000); // 5 seconds
     
             // find all the elements that contain card names and their FAQs
-            const cards = await driver.findElements(By.css('.max-w-4xl > .pb-6')); 
+            const cards = await driver.findElements(By.css('.max-w-4xl > .pb-6'));
+
+            const updatedRulings = new Map();
     
             for (const card of cards) {
     
@@ -55,9 +57,8 @@ export class Rulings {
                 updatedRulings.set(cardSlug(cardName), faqData);
             }
     
-            if (updatedRulings.size != 0) {
-                this.rulings = updatedRulings;
-            }
+            this.rulings = updatedRulings;
+
         } catch (error) {
             // make sure the map is empty
             this.rulings = new Map();
@@ -70,8 +71,7 @@ export class Rulings {
         return this.rulings.get(slug);
     }
 
-    rulingsInitialized() {
+    isInitialized() {
         return this.rulings.size > 0;
     }
 }
-

@@ -1,8 +1,4 @@
 import removeAccents from 'remove-accents';
-import { readFile } from 'fs/promises';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import path from 'path';
 
 /**
  * Normalize the card name to the same identifier that curiosa.io uses.
@@ -15,18 +11,9 @@ export function cardSlug(name) {
 }
 
 /**
- * Loads cards from a flat text file to an array.
- */
-export async function loadCards() {
-    const filePath = path.join(dirname(fileURLToPath(import.meta.url)), 'card_list.txt');
-    const data = await readFile(filePath, { encoding: 'utf-8' });
-    return data.split(/\r?\n/);
-}
-
-/**
  * Sets an interval to randomly update the Discord activity status of the bot.
  */
-export function randomizeActivity(client) {
+export function randomizeActivity(discordClient) {
 
     const activities = [
         "for ante",
@@ -40,7 +27,7 @@ export function randomizeActivity(client) {
     ];
 
     function setRandom() {
-        client.user.setActivity(activities[Math.floor(Math.random() * activities.length)]);
+        discordClient.user.setActivity(activities[Math.floor(Math.random() * activities.length)]);
     };
 
     setRandom();
