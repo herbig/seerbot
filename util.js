@@ -1,5 +1,8 @@
 import removeAccents from 'remove-accents';
 
+export const colorSuccess = '#674071';
+export const colorFail = '#3F4248';
+
 /**
  * Normalize the card name to the same identifier that curiosa.io uses.
  */
@@ -13,7 +16,7 @@ export function cardSlug(name) {
 /**
  * Sets an interval to randomly update the Discord activity status of the bot.
  */
-export function randomizeActivity(discordClient) {
+export function randomizeActivity(discord) {
 
     const activities = [
         "for ante",
@@ -27,7 +30,7 @@ export function randomizeActivity(discordClient) {
     ];
 
     function setRandom() {
-        discordClient.user.setActivity(activities[Math.floor(Math.random() * activities.length)]);
+        discord.setActivityStatus(activities[Math.floor(Math.random() * activities.length)]);
     };
 
     setRandom();

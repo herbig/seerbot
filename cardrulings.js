@@ -1,14 +1,15 @@
+import { cardSlug, colorSuccess, colorFail } from './util.js'
 import chrome from 'selenium-webdriver/chrome.js';
+import { Embed, EmbedBuilder } from 'discord.js';
 import { By } from 'selenium-webdriver';
-import { cardSlug } from './util.js';
 
-export class Rulings {
+export class CardRulings {
 
     #faqUrl = 'https://curiosa.io/faqs';
     #rulings;
 
     constructor() { 
-        // update when the app starts
+        // update rulings cache when the app starts
         this.#loadRulings();
 
         setInterval(() => {
@@ -66,11 +67,46 @@ export class Rulings {
         }
     }
 
-    getRulings(slug) {
-        return this.#rulings.get(slug);
+    #isInitialized() {
+        return this.#rulings !== undefined && this.#rulings.size > 0;
     }
 
-    isInitialized() {
-        return this.#rulings.size > 0;
+    /**
+     * Gets the Discord embed response for a rulings query.
+     * 
+     * @param {string} cardName the full text name of the card
+     * @returns {Embed} a Discord embed
+     */
+    getEmbed(cardName) {
+        const slug = cardSlug(cardName);
+        const embed = new EmbedBuilder()
+            .setTitle(`Rulings for ${cardName}`)
+            .setURL(process.env.CURIOSA_URL + slug);
+
+        // if the FAQ scraping breaks, tell them to give me a heads up 
+        if (!this.#isInitialized()) {
+            embed.setDescription('Oops, something\'s up with rulings. Please ping @herbig to fix it.')
+                .setColor(colorFail);
+        } else {
+        
+            const faqs = this.#rulings.get(slug);
+            let description = '';
+
+            if (faqs === undefined || faqs.length === 0) {
+                description = `No rulings available for ${cardName}.`;
+            } else {
+                for (let i = 0; i < faqs.length; i++) {
+                    if (i % 2 === 0) {
+                        description += '**' + faqs[i] + '**\n';
+                    } else {
+                        description += faqs[i] + '\n\n';
+                    }
+                }
+            }
+            embed.setDescription(description)
+                .setColor(colorSuccess);
+        }
+
+        return embed;
     }
 }
