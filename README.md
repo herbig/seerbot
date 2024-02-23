@@ -15,7 +15,7 @@ You will need to have set up a Discord bot in their developer portal with the *M
 
 ```
 BOT_TOKEN={Discord bot token}
-IMG_URL='https://curiosa.io/_next/image?w=750&q=75&url=https%3A%2F%2Fd27a44hjr9gen3.cloudfront.net%2Fbet%2F'
+IMG_URL=''
 CURIOSA_URL='https://curiosa.io/cards/'
 ```
 

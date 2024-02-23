@@ -12,7 +12,7 @@ export class DiscordBot {
                 GatewayIntentBits.MessageContent,
             ]
         });
-        this.#client.login(process.env.BOT_TOKEN);
+        this.#client.login(botToken);
     }
 
     onReady(callback) { this.#client.on(Events.ClientReady, callback); }

@@ -4,9 +4,13 @@ import { dirname } from 'path';
 import Fuse from "fuse.js";
 import path from 'path';
 
-export const QueryCode = {
+export const QueryCode = Object.freeze({
     RULINGS: '?',
-};
+    IMAGE: '!',
+    PRICE: '$', // TODO implement price lookup
+});
+
+const QUERY_CODES = Object.values(QueryCode);
 
 /**
  * Matches cards info queries of the form {{card name}}, as well as handling
@@ -14,7 +18,11 @@ export const QueryCode = {
  */
 export class QueryMatcher {
 
-    #fuzzySearch = new FuzzyCardSearch();
+    #fuzzySearch;
+
+    constructor(cardFile) {
+        this.#fuzzySearch = new FuzzyCardSearch(cardFile);
+    }
 
     /**
      * Gets a list of query matches within the given Discord message.
@@ -35,17 +43,23 @@ export class QueryMatcher {
             matches.forEach((match) => {
                 let query = match.replace('{{', '').replace('}}', '').trim();
                 let queryCode = undefined;
+                let setCode = undefined;
 
                 if (query === '') {
                     // if query is {{}} ignore it entirely
                     return;
-                } else if (query.startsWith(QueryCode.RULINGS)) {
+                } else if (QUERY_CODES.includes(queryCode = query.substring(0, 1))) {
+                    queryCode = query.substring(0, 1);
                     query = query.substring(1, query.length).trim();
-                    queryCode = QueryCode.RULINGS;
+                }
+
+                if (query.includes('|') && query.indexOf('|') !== query.length - 1) {
+                    setCode = query.substring(query.indexOf('|') + 1, query.length).trim();
+                    query = query.substring(0, query.indexOf('|')).trim();
                 }
 
                 const cardName = this.#fuzzySearch.search(query);
-                cardQueries.push({ queryCode: queryCode, query: query, cardName: cardName })
+                cardQueries.push({ queryCode: queryCode, query: query, cardName: cardName, setCode: setCode })
             });
         }
     
@@ -59,15 +73,14 @@ export class QueryMatcher {
  */
 class FuzzyCardSearch {
 
-    #cardFile = 'card_list.txt';
     #fuse;
 
-    constructor() {
-        this.#initialize();
+    constructor(searchFile) {
+        this.#initialize(searchFile);
     }
 
-    async #initialize() {
-        const filePath = path.join(dirname(fileURLToPath(import.meta.url)), this.#cardFile);
+    async #initialize(searchFile) {
+        const filePath = path.join(dirname(fileURLToPath(import.meta.url)), searchFile);
         const data = await readFile(filePath, { encoding: 'utf-8' });
         this.#fuse = new Fuse(data.split(/\r?\n/), { threshold: 0.3 });
     }
