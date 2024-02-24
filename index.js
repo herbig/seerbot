@@ -1,4 +1,4 @@
-import { cardSlug, randomizeActivity, colorSuccess, colorFail, thresholdText, startCase, costEmoji } from './util.js'
+import { cardSlug, randomizeActivity, colorSuccess, colorFail, thresholdText, startCase, costEmoji, replaceManaSymbols } from './util.js'
 import { QueryCode, QueryMatcher } from './querymatcher.js';
 import { CardRulings } from './cardrulings.js';
 import { FourCoresAPI } from './fourcores.js';
@@ -44,9 +44,9 @@ discord.onNewMessage(msg => {
                     .setURL(process.env.CURIOSA_URL + slug)
                     .setColor(colorSuccess);
 
-                // TODO rotate sites and upload image (e.g. {id}_rotate.png)
-                // if (card.category === 'site')
-                const image = process.env.IMG_URL + card.id + '.png';
+                const image = 
+                    process.env.IMG_URL_BASE + 
+                    card.id + (card.category.toUpperCase() === 'SITE' ? '_hor' : '') + '.png';
 
                 if (match.queryCode === QueryCode.IMAGE) {
                     return embed
@@ -58,7 +58,7 @@ discord.onNewMessage(msg => {
                         costEmoji(card.manaCost) + 
                         thresholdText(card.threshold);
 
-                    // TODO subtypes here is only displaying if there is a single one.
+                    // Subtypes here is only displaying if there is a single one.
                     // This only currently impacts Azuridge Caravan, which in the database 
                     // has all available minion subtypes.
                     const description = 
@@ -66,7 +66,7 @@ discord.onNewMessage(msg => {
                             (card.types.length > 0 ? ' — ' + card.types.map(s => startCase(s)).join(' ') : '') + 
                             (card.subtypes.length === 1 ? ' — ' + startCase(card.subtypes[0]) : '') + '**\n' +
                         (card.power ? 'Power ' + card.power + '\n' : '') +
-                        card.rulesText +  '\n' +
+                        replaceManaSymbols(card.rulesText) +  '\n' +
                         (card.flavorText !== '' ? '*' + card.flavorText + '*' : '');
 
                     return embed

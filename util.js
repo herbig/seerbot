@@ -4,10 +4,10 @@ export const colorSuccess = '#674071';
 export const colorFail = '#3F4248';
 
 const ElementEmoji  = Object.freeze({
-    AIR: '<:t_air:1210681551650558032>',
     EARTH: '<:t_earth:1210681878198353931>',
     FIRE: '<:t_fire:1210681555077435393>',
     WATER: '<:t_water:1210681879661903933>',
+    AIR: '<:t_air:1210681551650558032>',
 });
 
 export function thresholdText(threshold) {
@@ -32,9 +32,20 @@ const ManaCostEmoji = [
 ];
 
 export function costEmoji(manaCost) {
+    if (manaCost === '') return '';
     if (manaCost.toUpperCase() == 'X') return ManaCostEmoji[ManaCostEmoji.length - 1];
     return ManaCostEmoji[Number(manaCost)];
 }
+
+export function replaceManaSymbols(inputString) {
+    return inputString.replace(/\(F\)/g, ElementEmoji.FIRE)
+        .replace(/\(E\)/g, ElementEmoji.EARTH)
+        .replace(/\(A\)/g, ElementEmoji.AIR)
+        .replace(/\(W\)/g, ElementEmoji.WATER)
+        .replace(/\(1\)/g, ManaCostEmoji[1])
+        .replace(/\(2\)/g, ManaCostEmoji[2]);
+}
+  
 
 /**
  * Normalize the card name to the same identifier that curiosa.io uses.
