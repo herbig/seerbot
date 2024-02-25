@@ -48,7 +48,7 @@ export class QueryMatcher {
                 if (query === '') {
                     // if query is {{}} ignore it entirely
                     return;
-                } else if (QUERY_CODES.includes(queryCode = query.substring(0, 1))) {
+                } else if (QUERY_CODES.includes(query.substring(0, 1))) {
                     queryCode = query.substring(0, 1);
                     query = query.substring(1, query.length).trim();
                 }
