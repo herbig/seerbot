@@ -92,7 +92,3 @@ export function startCase(input) {
     if (!input) return '';
     return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
 }
-
-export function formatUSD(amount) {
-    return "$" + amount.toFixed(2).replace(/\.00$/, '');
-}

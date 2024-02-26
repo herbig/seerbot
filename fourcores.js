@@ -7,7 +7,7 @@ export class FourCoresAPI {
     async getCard(cardName, setCode) {
 
         const set = setCode === undefined ? '' : `&setCodes=${setCode}`;
-        const url = `${this.#API}/cards?name=${cardName}${set}`;
+        const url = `${this.#API}/cards?data=full&name=${cardName}${set}`;
 
         devLog(url);
 

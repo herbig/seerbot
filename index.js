@@ -1,4 +1,4 @@
-import { cardSlug, randomizeActivity, colorSuccess, colorFail, thresholdText, startCase, costEmoji, replaceManaSymbols, formatUSD } from './util.js'
+import { cardSlug, randomizeActivity, colorSuccess, colorFail, thresholdText, startCase, costEmoji, replaceManaSymbols } from './util.js'
 import { QueryCode, QueryMatcher } from './querymatcher.js';
 import { CardRulings } from './cardrulings.js';
 import { FourCoresAPI } from './fourcores.js';
@@ -40,42 +40,16 @@ discord.onNewMessage(msg => {
                         .setColor(colorFail);
                 }
 
+                const embed = new EmbedBuilder()
+                    .setURL(process.env.CURIOSA_URL + slug)
+                    .setColor(colorSuccess);
+
                 const image = 
                     process.env.IMG_URL_BASE + 
                     card.id + (card.category.toUpperCase() === 'SITE' ? '_hor' : '') + '.png';
 
-                if (match.queryCode === QueryCode.PRICE) {
-
-                    const title = `${match.cardName} - ${card.setCode}`;
-                    var description = '';
-
-                    for (const finish of card.finishes) {
-                        if (finish.lowPriceUSD !== null) {
-                            const url = `https://www.tcgplayer.com/product/${finish.tcgPlayerId}`;
-                            description = description + 
-                                '**[' + startCase(finish.type) + `](${url})**\n` + formatUSD(finish.lowPriceUSD) + '\n';
-                        }
-                    }
-
-                    if (description === '') {
-                        return new EmbedBuilder()
-                            .setTitle(title)
-                            .setURL(process.env.CURIOSA_URL + slug)
-                            .setThumbnail(image)
-                            .setDescription(`No price info for ${match.cardName}.`)
-                            .setColor(colorFail);
-                    } else {
-                        return new EmbedBuilder()
-                            .setTitle(title)
-                            .setURL(process.env.CURIOSA_URL + slug)
-                            .setThumbnail(image)
-                            .setDescription('*TCGPlayer.com - Lowest Listing Price*\n' + description)
-                            .setColor(colorSuccess);
-                    }
-                } else if (match.queryCode === QueryCode.IMAGE) {
-                    return new EmbedBuilder()
-                        .setURL(process.env.CURIOSA_URL + slug)
-                        .setColor(colorSuccess)
+                if (match.queryCode === QueryCode.IMAGE) {
+                    return embed
                         .setTitle(match.cardName)
                         .setImage(image); // TODO look into how to do alt text for image/thumbnails
                 } else {
@@ -95,9 +69,7 @@ discord.onNewMessage(msg => {
                         replaceManaSymbols(card.rulesText) +  '\n' +
                         (card.flavorText !== '' ? '*' + card.flavorText + '*' : '');
 
-                    return new EmbedBuilder()
-                        .setURL(process.env.CURIOSA_URL + slug)
-                        .setColor(colorSuccess)
+                    return embed
                         .setTitle(title)
                         .setDescription(description)
                         .setThumbnail(image);
