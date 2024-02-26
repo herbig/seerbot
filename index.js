@@ -1,4 +1,4 @@
-import { cardSlug, randomizeActivity, colorSuccess, colorFail, thresholdText, startCase, costEmoji, replaceManaSymbols, formatUSD, blockPriceInfo } from './util.js'
+import { SetCode, cardSlug, randomizeActivity, colorSuccess, colorFail, thresholdText, startCase, costEmoji, replaceManaSymbols, formatUSD, blockPriceInfo } from './util.js'
 import { QueryCode, QueryMatcher } from './querymatcher.js';
 import { CardRulings } from './cardrulings.js';
 import { FourCoresAPI } from './fourcores.js';
@@ -46,7 +46,7 @@ discord.onNewMessage(msg => {
 
                 if (match.queryCode === QueryCode.PRICE && !blockPriceInfo.includes(msg.guild.id)) {
 
-                    const title = `${match.cardName} - ${card.setCode}`;
+                    const title = `${match.cardName} - ${SetCode[card.setCode]}`;
                     var description = '';
 
                     for (const finish of card.finishes) {

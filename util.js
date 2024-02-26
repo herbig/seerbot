@@ -7,6 +7,17 @@ export const blockPriceInfo = [
     '769359301466652693', // Official Sorcery Discord
 ];
 
+export const SetCode  = Object.freeze({
+    APC: 'Alpha Precon',
+    ABT: 'Alpha Box Topper',
+    P22: '2022 Promo',
+    ALP: 'Alpha',
+    BET: 'Beta',
+    BBT: 'Beta Box Topper',
+    ALP: 'Alpha',
+    P23: '2023 Promo',
+});
+
 const ElementEmoji  = Object.freeze({
     EARTH: '<:t_earth:1210681878198353931>',
     FIRE: '<:t_fire:1210681555077435393>',
