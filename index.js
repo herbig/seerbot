@@ -1,4 +1,4 @@
-import { SetCode, cardSlug, randomizeActivity, colorSuccess, colorFail, thresholdText, startCase, costEmoji, replaceManaSymbols, formatUSD, blockPriceInfo } from './util.js'
+import { SetCode, cardSlug, randomizeActivity, colorSuccess, colorFail, thresholdText, startCase, costEmoji, replaceManaSymbols, formatUSD, blockPriceInfo, getHelpMessage } from './util.js'
 import { QueryCode, QueryMatcher } from './querymatcher.js';
 import { CardRulings } from './cardrulings.js';
 import { FourCoresAPI } from './fourcores.js';
@@ -20,6 +20,11 @@ discord.onNewMessage(msg => {
 
     // if it's a bot message, don't do anything
     if (msg.author.bot) return;
+
+    if (msg.content.replace(/\s+/g, '').toLowerCase() === '{{help}}') {
+        msg.reply(getHelpMessage(msg.guild.id))
+        return;
+    }
 
     const embedPromises = queryMatcher.getMatches(msg).map(async match => {
         if (match.cardName === undefined) {

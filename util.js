@@ -8,13 +8,13 @@ export const blockPriceInfo = [
 ];
 
 export const SetCode  = Object.freeze({
+    APP: 'Alpha Pledge Pack',
     APC: 'Alpha Precon',
     ABT: 'Alpha Box Topper',
     P22: '2022 Promo',
     ALP: 'Alpha',
     BET: 'Beta',
     BBT: 'Beta Box Topper',
-    ALP: 'Alpha',
     P23: '2023 Promo',
 });
 
@@ -110,4 +110,28 @@ export function startCase(input) {
 
 export function formatUSD(amount) {
     return "$" + amount.toFixed(2).replace(/\.00$/, '');
+}
+
+export function getHelpMessage(serverId) {
+    return '**Sorcery Card Lookup**\n' +
+    'Place a full, partial, or misspelled card name within double brackets, e.g. **{{ruby core}}** to get the card\'s stats and a thumbnail image. Text casing and extra whitespace does not matter. The default card returned is its first printing (Alpha).\n\n' +
+
+    'The following  commands can also be placed within the brackets *before* the card name:\n\n' +
+
+    '**!** - to get a larger image, ex: **{{!death dealer}}**\n' +
+    '**?** - to get official FAQ rulings on the card, from *curiosa.io*, ex: **{{?enchantress}}**\n' +
+    (!blockPriceInfo.includes(serverId) ? '**$** - to get the *tcgplayer.com* lowest listed price, if available, ex: **{{$gray wolves}}**\n\n' : '') +
+
+    'You can also place a "set code" after a *pipe* character following the card name to specify which set you would like, as in **{{critical strike | abt}}**.\n\n' +
+
+    'The available set codes are:\n\n' +
+
+    '**ALP** - Alpha\n' +
+    '**BET** - Beta\n' +
+    '**APC** - Alpha Preconstructed Deck\n' +
+    '**APP** - Alpha Pledge Pack\n' +
+    '**ABT** - Alpha Box Topper\n' +
+    '**BBT** - Beta Box Topper\n' +
+    '**P22** - 2022 Promo\n' +
+    '**P23** - 2023 Promo'
 }
