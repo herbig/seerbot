@@ -50,10 +50,11 @@ discord.onNewMessage(msg => {
                     var description = '';
 
                     for (const finish of card.finishes) {
-                        if (finish.lowPriceUSD !== null) {
+                        if (finish.tcgPlayerId !== null) {
                             const url = `https://www.tcgplayer.com/product/${finish.tcgPlayerId}`;
+                            const price = finish.lowPriceUSD === null ? 'None listed' : formatUSD(finish.lowPriceUSD);
                             description = description + 
-                                '**[' + startCase(finish.type) + `](${url})**\n` + formatUSD(finish.lowPriceUSD) + '\n';
+                                '**[' + startCase(finish.type) + `](${url})**\n` + price + '\n';
                         }
                     }
 
