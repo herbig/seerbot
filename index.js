@@ -1,4 +1,4 @@
-import { cardSlug, randomizeActivity, colorSuccess, colorFail, thresholdText, startCase, costEmoji, replaceManaSymbols, formatUSD } from './util.js'
+import { cardSlug, randomizeActivity, colorSuccess, colorFail, thresholdText, startCase, costEmoji, replaceManaSymbols, formatUSD, blockPriceInfo } from './util.js'
 import { QueryCode, QueryMatcher } from './querymatcher.js';
 import { CardRulings } from './cardrulings.js';
 import { FourCoresAPI } from './fourcores.js';
@@ -44,7 +44,7 @@ discord.onNewMessage(msg => {
                     process.env.IMG_URL_BASE + 
                     card.id + (card.category.toUpperCase() === 'SITE' ? '_hor' : '') + '.png';
 
-                if (match.queryCode === QueryCode.PRICE) {
+                if (match.queryCode === QueryCode.PRICE && !blockPriceInfo.includes(msg.guild.id)) {
 
                     const title = `${match.cardName} - ${card.setCode}`;
                     var description = '';

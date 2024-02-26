@@ -3,6 +3,10 @@ import removeAccents from 'remove-accents';
 export const colorSuccess = '#674071';
 export const colorFail = '#3F4248';
 
+export const blockPriceInfo = [
+    '769359301466652693', // Official Sorcery Discord
+];
+
 const ElementEmoji  = Object.freeze({
     EARTH: '<:t_earth:1210681878198353931>',
     FIRE: '<:t_fire:1210681555077435393>',
