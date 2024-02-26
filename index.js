@@ -1,5 +1,6 @@
 import { cardSlug, randomizeActivity, colorSuccess, colorFail, thresholdText, startCase, costEmoji, replaceManaSymbols, formatUSD } from './util.js'
 import { QueryCode, QueryMatcher } from './querymatcher.js';
+import { LocalStorage } from './localstorage.js';
 import { CardRulings } from './cardrulings.js';
 import { FourCoresAPI } from './fourcores.js';
 import { DiscordBot } from './discordbot.js';
@@ -9,6 +10,7 @@ dotenv.config();
 
 const queryMatcher = new QueryMatcher('card_list.txt');
 const discord = new DiscordBot(process.env.BOT_TOKEN);
+const localStorage = new LocalStorage();
 const cardRulings = new CardRulings();
 const api = new FourCoresAPI();
 
@@ -16,10 +18,21 @@ discord.onReady(async () => {
     randomizeActivity(discord);
 });
 
-discord.onNewMessage(msg => {
+discord.onNewMessage(async msg => {
 
     // if it's a bot message, don't do anything
     if (msg.author.bot) return;
+
+    // toggle supporting price info TODO put this into an admin
+    // panel class if we get more settings
+    if (msg.author.id === msg.guild.ownerId) {
+        if (msg.content === '-seerbot togglePriceSupport') {
+            const supportsPricing = await localStorage.getSupportsPricing();
+            localStorage.setSupportsPricing(!supportsPricing);
+            msg.reply('Price support is ' + (supportsPricing ? 'OFF' : 'ON'));
+            return;
+        }
+    }
 
     const embedPromises = queryMatcher.getMatches(msg).map(async match => {
         if (match.cardName === undefined) {
@@ -44,7 +57,9 @@ discord.onNewMessage(msg => {
                     process.env.IMG_URL_BASE + 
                     card.id + (card.category.toUpperCase() === 'SITE' ? '_hor' : '') + '.png';
 
-                if (match.queryCode === QueryCode.PRICE) {
+                const supportsPricing = await localStorage.getSupportsPricing();
+
+                if (match.queryCode === QueryCode.PRICE && supportsPricing) {
 
                     const title = `${match.cardName} - ${card.setCode}`;
                     var description = '';

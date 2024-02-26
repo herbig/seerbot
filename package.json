@@ -13,12 +13,15 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^1.6.7",
+    "better-sqlite3": "^9.4.3",
     "chromedriver": "^121.0.2",
     "discord.js": "^14.14.1",
     "dotenv": "^16.0.3",
     "fuse.js": "^7.0.0",
+    "mysql2": "^3.9.2",
     "node": "^21.6.1",
     "nodemon": "^3.0.3",
+    "quick.db": "^9.1.7",
     "remove-accents": "^0.5.0",
     "selenium-webdriver": "^4.17.0"
   }
