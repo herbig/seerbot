@@ -21,7 +21,7 @@ discord.onNewMessage(msg => {
     // if it's a bot message, don't do anything
     if (msg.author.bot) return;
 
-    if (msg.content.replace(/\s+/g, '').toLowerCase() === '{{help}}') {
+    if (msg.content.replace(/\s+/g, '').toLowerCase().includes('{{help}}')) {
         msg.reply(getHelpMessage(msg.guild.id))
         return;
     }
