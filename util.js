@@ -77,7 +77,8 @@ export function replaceManaSymbols(inputString) {
         .replace(/\(A\)/g, ElementEmoji.AIR)
         .replace(/\(W\)/g, ElementEmoji.WATER)
         .replace(/\(1\)/g, ManaCostEmoji[1])
-        .replace(/\(2\)/g, ManaCostEmoji[2]);
+        .replace(/\(2\)/g, ManaCostEmoji[2])
+        .replace(/\(2\)/g, ManaCostEmoji[3]);
 }
   
 
