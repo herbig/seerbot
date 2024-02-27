@@ -132,18 +132,19 @@ export function formatUSD(amount) {
 }
 
 export function getHelpMessage(serverId) {
-    return '**Sorcery Card Lookup**\n' +
-    'Place a full, partial, or misspelled card name within double brackets, e.g. **{{ruby core}}** to get the card\'s stats and a thumbnail image. Text casing and extra whitespace does not matter. The default card returned is its first printing (Alpha).\n\n' +
+    return '‎\n' + // empty space to create a line break that won't be trimmed by Discord
+    '**SeerBot Sorcery Card Lookup**\n\n' +
+    'Place a full, partial, or misspelled card name within curly double brackets, e.g. **{{philosopher}}** to get the card\'s stats and a thumbnail image. Text casing or whitespace do not matter. The default card returned is its first printing (Alpha in most cases).\n\n' +
 
     'The following  commands can also be placed within the brackets *before* the card name:\n\n' +
 
-    '**!** - to get a larger image, ex: **{{!death dealer}}**\n' +
-    '**?** - to get official FAQ rulings on the card, from *curiosa.io*, ex: **{{?enchantress}}**\n' +
-    (!blockPriceInfo.includes(serverId) ? '**$** - to get the *tcgplayer.com* lowest listed price, if available, ex: **{{$gray wolves}}**\n\n' : '\n') +
+    '**!** - for a larger image, ex: **{{!death dealer}}**\n' +
+    '**?** - for official FAQ rulings on the card, from *[curiosa.io](<https://curiosa.io/faqs>)*, ex: **{{?enchantress}}**\n' +
+    (!blockPriceInfo.includes(serverId) ? '**$** - to get the *[tcgplayer.com](<https://www.tcgplayer.com/categories/trading-and-collectible-card-games/sorcery-contested-realm/price-guides>)* lowest listed price, if available, ex: **{{$ruby core}}**\n\n' : '\n') +
 
-    'You can also place a "set code" after a *pipe* character following the card name to specify which set you would like, as in **{{critical strike | abt}}**.\n\n' +
+    'You can also place a "set code" after a *pipe* character *after* the card name to specify which set you would like, as in **{{critical strike | abt}}**.\n\n' +
 
-    'The available set codes are:\n\n' +
+    'The current set codes are:\n\n' +
 
     '**ALP** - Alpha\n' +
     '**BET** - Beta\n' +

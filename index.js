@@ -22,7 +22,7 @@ discord.onNewMessage(msg => {
     if (msg.author.bot) return;
 
     if (msg.content.replace(/\s+/g, '').toLowerCase().includes('{{help}}')) {
-        msg.reply(getHelpMessage(msg.guild.id))
+        msg.reply(getHelpMessage(msg.guild.id));
         return;
     }
 
