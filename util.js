@@ -1,7 +1,26 @@
 import removeAccents from 'remove-accents';
 
-export const colorSuccess = '#674071';
-export const colorFail = '#3F4248';
+export const Color  = Object.freeze({
+    EARTH: '#A79E81',
+    AIR: '#ACB4D4',
+    FIRE: '#E06638',
+    WATER: '#7BBDD9',
+    COLORLESS: '#221B17',
+    GOLD: '#CCAC47',
+
+    SUCCESS: '#674071',
+    FAIL: '#3F4248',
+});
+
+export function accentColor(elements) {
+    if (elements.length === 0) {
+        return Color.COLORLESS;
+    } else if (elements.length === 1) {
+        return Color[elements[0].toUpperCase()];
+    } else {
+        return Color.GOLD;
+    }
+}
 
 export const blockPriceInfo = [
     '769359301466652693', // Official Sorcery Discord
@@ -120,7 +139,7 @@ export function getHelpMessage(serverId) {
 
     '**!** - to get a larger image, ex: **{{!death dealer}}**\n' +
     '**?** - to get official FAQ rulings on the card, from *curiosa.io*, ex: **{{?enchantress}}**\n' +
-    (!blockPriceInfo.includes(serverId) ? '**$** - to get the *tcgplayer.com* lowest listed price, if available, ex: **{{$gray wolves}}**\n\n' : '') +
+    (!blockPriceInfo.includes(serverId) ? '**$** - to get the *tcgplayer.com* lowest listed price, if available, ex: **{{$gray wolves}}**\n\n' : '\n') +
 
     'You can also place a "set code" after a *pipe* character following the card name to specify which set you would like, as in **{{critical strike | abt}}**.\n\n' +
 

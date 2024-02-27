@@ -1,4 +1,4 @@
-import { SetCode, cardSlug, randomizeActivity, colorSuccess, colorFail, thresholdText, startCase, costEmoji, replaceManaSymbols, formatUSD, blockPriceInfo, getHelpMessage } from './util.js'
+import { SetCode, cardSlug, randomizeActivity, Color, thresholdText, startCase, costEmoji, replaceManaSymbols, formatUSD, blockPriceInfo, getHelpMessage, accentColor } from './util.js'
 import { QueryCode, QueryMatcher } from './querymatcher.js';
 import { CardRulings } from './cardrulings.js';
 import { FourCoresAPI } from './fourcores.js';
@@ -30,7 +30,7 @@ discord.onNewMessage(msg => {
         if (match.cardName === undefined) {
             return new EmbedBuilder()
                 .setDescription(`No card found for \"${match.query}\"`)
-                .setColor(colorFail);
+                .setColor(Color.FAIL);
         } else {
             if (match.queryCode === QueryCode.RULINGS) {
                 return cardRulings.getEmbed(match.cardName);
@@ -42,7 +42,7 @@ discord.onNewMessage(msg => {
                     const set = match.setCode ? ` in \"${match.setCode}\"` : '';
                     return new EmbedBuilder()
                         .setDescription(`No card found for \"${match.query}\"${set}`)
-                        .setColor(colorFail);
+                        .setColor(Color.FAIL);
                 }
 
                 const image = 
@@ -69,19 +69,19 @@ discord.onNewMessage(msg => {
                             .setURL(process.env.CURIOSA_URL + slug)
                             .setThumbnail(image)
                             .setDescription(`No price info for ${match.cardName}.`)
-                            .setColor(colorFail);
+                            .setColor(Color.FAIL);
                     } else {
                         return new EmbedBuilder()
                             .setTitle(title)
                             .setURL(process.env.CURIOSA_URL + slug)
                             .setThumbnail(image)
                             .setDescription('*TCGPlayer.com - Lowest Listing Price*\n' + description)
-                            .setColor(colorSuccess);
+                            .setColor(accentColor(card.elements));
                     }
                 } else if (match.queryCode === QueryCode.IMAGE) {
                     return new EmbedBuilder()
                         .setURL(process.env.CURIOSA_URL + slug)
-                        .setColor(colorSuccess)
+                        .setColor(accentColor(card.elements))
                         .setTitle(match.cardName)
                         .setImage(image); // TODO look into how to do alt text for image/thumbnails
                 } else {
@@ -103,7 +103,7 @@ discord.onNewMessage(msg => {
 
                     return new EmbedBuilder()
                         .setURL(process.env.CURIOSA_URL + slug)
-                        .setColor(colorSuccess)
+                        .setColor(accentColor(card.elements))
                         .setTitle(title)
                         .setDescription(description)
                         .setThumbnail(image);

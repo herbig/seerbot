@@ -1,4 +1,4 @@
-import { cardSlug, colorSuccess, colorFail } from './util.js'
+import { cardSlug, Color } from './util.js'
 import chrome from 'selenium-webdriver/chrome.js';
 import { Embed, EmbedBuilder } from 'discord.js';
 import { By } from 'selenium-webdriver';
@@ -86,7 +86,7 @@ export class CardRulings {
         // if the FAQ scraping breaks, tell them to give me a heads up 
         if (!this.#isInitialized()) {
             embed.setDescription('Oops, something\'s up with rulings. Please ping @herbig to fix it.')
-                .setColor(colorFail);
+                .setColor(Color.FAIL);
         } else {
         
             const faqs = this.#rulings.get(slug);
@@ -104,7 +104,7 @@ export class CardRulings {
                 }
             }
             embed.setDescription(description)
-                .setColor(colorSuccess);
+                .setColor(Color.SUCCESS);
         }
 
         return embed;
