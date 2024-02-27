@@ -81,6 +81,8 @@ export class CardRulings {
         const slug = cardSlug(cardName);
         const embed = new EmbedBuilder()
             .setTitle(`Rulings for ${cardName}`)
+            // TODO using old slug based location, since we don't have card info here
+            .setThumbnail(`https://sorcery-images.s3.amazonaws.com/${slug}.png`)
             .setURL(process.env.CURIOSA_URL + slug);
 
         // if the FAQ scraping breaks, tell them to give me a heads up 
