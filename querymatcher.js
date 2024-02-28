@@ -7,7 +7,7 @@ import path from 'path';
 export const QueryCode = Object.freeze({
     RULINGS: '?',
     IMAGE: '!',
-    PRICE: '$', // TODO implement price lookup
+    PRICE: '$',
 });
 
 const QUERY_CODES = Object.values(QueryCode);

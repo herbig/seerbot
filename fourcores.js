@@ -1,5 +1,8 @@
 import { devLog } from "./util.js";
 
+/**
+ * Handles REST requests to the fourcores.xyz API.
+ */
 export class FourCoresAPI {
 
     #API = 'https://fourcores.xyz/api';
@@ -17,6 +20,7 @@ export class FourCoresAPI {
             if (!response.ok) return undefined;
 
             const data = await response.json();
+            
             return data.length === 0 ? null : data[0];
         } catch (error) {
             return undefined;

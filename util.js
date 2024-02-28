@@ -1,5 +1,7 @@
 import removeAccents from 'remove-accents';
 
+export const CURIOSA_CARD_URL = 'https://curiosa.io/cards/';
+
 export const Color  = Object.freeze({
     EARTH: '#A79E81',
     AIR: '#ACB4D4',
@@ -22,11 +24,12 @@ export function accentColor(elements) {
     }
 }
 
-export const blockPriceInfo = [
+/** List of Discord server ids to not allow price lookups on. */
+export const blockPriceLookups = [
     '769359301466652693', // Official Sorcery Discord
 ];
 
-export const SetCode  = Object.freeze({
+export const SetName  = Object.freeze({
     APP: 'Alpha Pledge Pack',
     APC: 'Alpha Precon',
     ABT: 'Alpha Box Topper',
@@ -86,37 +89,10 @@ export function replaceManaSymbols(inputString) {
  * Normalize the card name to the same identifier that curiosa.io uses.
  */
 export function cardSlug(name) {
-    return removeAccents(name)
-        .toLowerCase()
-        .replace(/[\s\-]+/g, '_') // Replace spaces or dashes with underscores
+    return removeAccents(name)       // remove accents, such as Ä
+        .toLowerCase()               // lowercase it
+        .replace(/[\s\-]+/g, '_')    // Replace spaces or dashes with underscores
         .replace(/[^a-zA-Z_]/g, ''); // Remove non-alphabetic characters (except for underscores)
-}
-
-/**
- * Sets an interval to randomly update the Discord activity status of the bot.
- */
-export function randomizeActivity(discord) {
-
-    const activities = [
-        "for ante",
-        "Grey Wolves",
-        "Wicker Manikin",
-        "at Death's Door",
-        "Deathspeaker",
-        "four Cores",
-        "Muck Lampreys",
-        "Grapple Shot",
-    ];
-
-    function setRandom() {
-        discord.setActivityStatus(activities[Math.floor(Math.random() * activities.length)]);
-    };
-
-    setRandom();
-
-    setInterval(() => {
-        setRandom();
-    }, 600_000); // 10 minute interval
 }
 
 export function devLog(log) {
@@ -141,7 +117,7 @@ export function getHelpMessage(serverId) {
 
     '**!** - for a larger image, ex: **{{!death dealer}}**\n' +
     '**?** - for official FAQ rulings on the card, from *[curiosa.io](<https://curiosa.io/faqs>)*, ex: **{{?enchantress}}**\n' +
-    (!blockPriceInfo.includes(serverId) ? '**$** - to get the *[tcgplayer.com](<https://www.tcgplayer.com/categories/trading-and-collectible-card-games/sorcery-contested-realm/price-guides>)* lowest listed price, if available, ex: **{{$ruby core}}**\n\n' : '\n') +
+    (!blockPriceLookups.includes(serverId) ? '**$** - to get the *[tcgplayer.com](<https://www.tcgplayer.com/categories/trading-and-collectible-card-games/sorcery-contested-realm/price-guides>)* lowest listed price, if available, ex: **{{$ruby core}}**\n\n' : '\n') +
 
     'You can also place a "set code" after a *pipe* character *after* the card name to specify which set you would like, as in **{{critical strike | abt}}**.\n\n' +
 

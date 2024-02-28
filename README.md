@@ -14,10 +14,12 @@ Then
 You will need to have set up a Discord bot in their developer portal with the *Message Content Intent* permission, as well as the following values in your local `.env` file:
 
 ```
+# your Discord bot token
 BOT_TOKEN={Discord bot token}
-IMG_URL_BASE=''
-CURIOSA_URL='https://curiosa.io/cards/'
+# base URL for hosted card images
+IMG_URL_BASE='https://sorcery-api.s3.amazonaws.com/'
+# optional, to turn on local logging
+DEV_LOG=true
 ```
 
-### TODO
-- price lookup (TCGPlayer no longer giving API access...)
+Mana and threshold emoji are provided under `resources/emoji`, and `resources/emoji_adjusted`, the adjusted version having bottom padding to properly baseline align them within a Discord embed.  To host them yourself, add them to your Discord server and update the ElementEmoji and ManaCostEmoji fields with their ids.

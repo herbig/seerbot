@@ -1,4 +1,4 @@
-import { cardSlug, Color } from './util.js'
+import { CURIOSA_CARD_URL, cardSlug, Color } from './util.js';
 import chrome from 'selenium-webdriver/chrome.js';
 import { Embed, EmbedBuilder } from 'discord.js';
 import { By } from 'selenium-webdriver';
@@ -9,31 +9,26 @@ export class CardRulings {
     #rulings;
 
     constructor() { 
-        // update rulings cache when the app starts
+        // load the rulings cache when the app starts
+        // Heroku restarts the app once a day, so it
+        // should always have the latest 
         this.#loadRulings();
-
-        setInterval(() => {
-            // update again every 2 days
-            this.#loadRulings();
-        }, 2 * 24 * 60 * 60 * 1000);
     }
 
     async #loadRulings() {
 
-        const options = new chrome.Options()
-            .addArguments('--headless')
-            .addArguments('--no-sandbox')
-            .addArguments('--disable-dev-shm-usage');
-
         const driver = chrome.Driver.createSession(
-            options, 
+            new chrome.Options()
+                .addArguments('--headless')
+                .addArguments('--no-sandbox')
+                .addArguments('--disable-dev-shm-usage'), 
             new chrome.ServiceBuilder().build()
         );
 
         try {
             await driver.get(this.#faqUrl);
     
-            // give it a while to load, we're not in a rush
+            // give it a while to load
             await driver.sleep(5_000); // 5 seconds
     
             // find all the elements that contain card names and their FAQs
@@ -44,10 +39,10 @@ export class CardRulings {
             for (const card of cards) {
     
                 const cardName = await card.findElement(By.css('h3')).getText();
-                const faqs = await card.findElements(By.css('.curiosa-faq'));
+                const cardFAQs = await card.findElements(By.css('.curiosa-faq'));
                 const faqData = [];
     
-                for (const faq of faqs) {
+                for (const faq of cardFAQs) {
                     const pair = await faq.findElements(By.css('p.mb-4'));
                     const question = await pair[0].getText();
                     const answer = await pair[1].getText();
@@ -60,7 +55,7 @@ export class CardRulings {
             this.#rulings = updatedRulings;
 
         } catch (error) {
-            // make sure the map is empty
+            // set an empty map
             this.#rulings = new Map();
         } finally {
             driver.quit();
@@ -83,7 +78,7 @@ export class CardRulings {
             .setTitle(`Rulings for ${cardName}`)
             // TODO using old slug based location, since we don't have card info here
             .setThumbnail(`https://sorcery-images.s3.amazonaws.com/${slug}.png`)
-            .setURL(process.env.CURIOSA_URL + slug);
+            .setURL(CURIOSA_CARD_URL + slug);
 
         // if the FAQ scraping breaks, tell them to give me a heads up 
         if (!this.#isInitialized()) {

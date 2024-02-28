@@ -1,8 +1,8 @@
-import { SetCode, cardSlug, randomizeActivity, Color, thresholdText, startCase, costEmoji, replaceManaSymbols, formatUSD, blockPriceInfo, getHelpMessage, accentColor } from './util.js'
+import { CURIOSA_CARD_URL, SetName, cardSlug, Color, thresholdText, startCase, costEmoji, replaceManaSymbols, formatUSD, blockPriceLookups, getHelpMessage, accentColor } from './util.js'
+import { DiscordBot, randomizeActivity } from './discordbot.js';
 import { QueryCode, QueryMatcher } from './querymatcher.js';
 import { CardRulings } from './cardrulings.js';
 import { FourCoresAPI } from './fourcores.js';
-import { DiscordBot } from './discordbot.js';
 import { EmbedBuilder } from 'discord.js';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -21,6 +21,7 @@ discord.onNewMessage(msg => {
     // if it's a bot message, don't do anything
     if (msg.author.bot) return;
 
+    // detect {{help}} query and response with the help message
     if (msg.content.replace(/\s+/g, '').toLowerCase().includes('{{help}}')) {
         msg.reply(getHelpMessage(msg.guild.id));
         return;
@@ -49,9 +50,9 @@ discord.onNewMessage(msg => {
                     process.env.IMG_URL_BASE + 
                     card.id + (card.category.toUpperCase() === 'SITE' ? '_hor' : '') + '.png';
 
-                if (match.queryCode === QueryCode.PRICE && !blockPriceInfo.includes(msg.guild.id)) {
+                if (match.queryCode === QueryCode.PRICE && !blockPriceLookups.includes(msg.guild.id)) {
 
-                    const title = `${match.cardName} - ${SetCode[card.setCode]}`;
+                    const title = `${match.cardName} - ${SetName[card.setCode]}`;
                     var description = '';
 
                     for (const finish of card.finishes) {
@@ -66,33 +67,33 @@ discord.onNewMessage(msg => {
                     if (description === '') {
                         return new EmbedBuilder()
                             .setTitle(title)
-                            .setURL(process.env.CURIOSA_URL + slug)
+                            .setURL(CURIOSA_CARD_URL + slug)
                             .setThumbnail(image)
                             .setDescription(`No price info for ${match.cardName}.`)
                             .setColor(Color.FAIL);
                     } else {
                         return new EmbedBuilder()
                             .setTitle(title)
-                            .setURL(process.env.CURIOSA_URL + slug)
+                            .setURL(CURIOSA_CARD_URL + slug)
                             .setThumbnail(image)
                             .setDescription('*TCGPlayer.com - Lowest Listing Price*\n' + description)
                             .setColor(accentColor(card.elements));
                     }
                 } else if (match.queryCode === QueryCode.IMAGE) {
                     return new EmbedBuilder()
-                        .setURL(process.env.CURIOSA_URL + slug)
+                        .setURL(CURIOSA_CARD_URL + slug)
                         .setColor(accentColor(card.elements))
                         .setTitle(match.cardName)
-                        .setImage(image); // TODO look into how to do alt text for image/thumbnails
+                        .setImage(image);
                 } else {
 
                     const title = match.cardName + '  ' + 
                         costEmoji(card.manaCost) + 
                         thresholdText(card.threshold);
 
-                    // Subtypes here is only displaying if there is a single one.
-                    // This only currently impacts Azuridge Caravan, which in the database 
-                    // has all available minion subtypes.
+                    // subtypes here is only displaying if there is a single one.
+                    // This only currently impacts Azuridge Caravan, which in the 
+                    // database has all available minion subtypes
                     const description = 
                         '**' + startCase(card.category) + 
                             (card.types.length > 0 ? ' — ' + card.types.map(s => startCase(s)).join(' ') : '') + 
@@ -102,7 +103,7 @@ discord.onNewMessage(msg => {
                         (card.flavorText !== '' ? '*' + card.flavorText + '*' : '');
 
                     return new EmbedBuilder()
-                        .setURL(process.env.CURIOSA_URL + slug)
+                        .setURL(CURIOSA_CARD_URL + slug)
                         .setColor(accentColor(card.elements))
                         .setTitle(title)
                         .setDescription(description)
