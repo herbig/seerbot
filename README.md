@@ -18,8 +18,16 @@ You will need to have set up a Discord bot in their developer portal with the *M
 BOT_TOKEN={Discord bot token}
 # base URL for hosted card images
 IMG_URL_BASE='https://sorcery-api.s3.amazonaws.com/'
-# optional, to turn on local logging
-DEV_LOG=true
 ```
 
-Mana and threshold emoji are provided under `resources/emoji`, and `resources/emoji_adjusted`, the adjusted version having bottom padding to properly baseline align them within a Discord embed.  To host them yourself, add them to your Discord server and update the ElementEmoji and ManaCostEmoji fields with their ids.
+# Emoji
+Mana and threshold emoji are provided under `resources/emoji`, and `resources/emoji_adjusted`, the adjusted version having bottom padding to properly baseline align them within a Discord embed.  These are already hosted, and should appear.  To host them yourself, add them to your Discord server and update the `ElementEmoji` and `ManaCostEmoji` fields with their ids.
+
+# Adding new cards
+When new sets are printed, the following steps will need to be taken:
+
+- update the backing API with the cards and their data
+- update `card_list.txt` with any new card names
+- add the card images to both slug-based and id based S3 buckets (or whatever image hosting is used), with a `{id}_hor` (horizontal) postfix for id based Site cards.
+- update `replaceManaSymbols` if additional mana amounts appear on the new card's text
+- update `getHelpMessage`, `SetName` with the new set codes

@@ -1,7 +1,5 @@
 import removeAccents from 'remove-accents';
 
-export const CURIOSA_CARD_URL = 'https://curiosa.io/cards/';
-
 export const Color  = Object.freeze({
     EARTH: '#A79E81',
     AIR: '#ACB4D4',
@@ -23,11 +21,6 @@ export function accentColor(elements) {
         return Color.GOLD;
     }
 }
-
-/** List of Discord server ids to not allow price lookups on. */
-export const blockPriceLookups = [
-    '769359301466652693', // Official Sorcery Discord
-];
 
 export const SetName  = Object.freeze({
     APP: 'Alpha Pledge Pack',
@@ -75,7 +68,8 @@ export function costEmoji(manaCost) {
 }
 
 export function replaceManaSymbols(inputString) {
-    return inputString.replace(/\(F\)/g, ElementEmoji.FIRE)
+    return inputString
+        .replace(/\(F\)/g, ElementEmoji.FIRE)
         .replace(/\(E\)/g, ElementEmoji.EARTH)
         .replace(/\(A\)/g, ElementEmoji.AIR)
         .replace(/\(W\)/g, ElementEmoji.WATER)
@@ -84,7 +78,6 @@ export function replaceManaSymbols(inputString) {
         .replace(/\(2\)/g, ManaCostEmoji[2])
         .replace(/\(3\)/g, ManaCostEmoji[3]);
 }
-  
 
 /**
  * Normalize the card name to the same identifier that curiosa.io uses.
@@ -96,10 +89,6 @@ export function cardSlug(name) {
         .replace(/[^a-zA-Z_]/g, ''); // Remove non-alphabetic characters (except for underscores)
 }
 
-export function devLog(log) {
-    if (process.env.DEV_LOG) console.log(log);
-}
-
 export function startCase(input) {
     if (!input) return '';
     return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
@@ -107,29 +96,4 @@ export function startCase(input) {
 
 export function formatUSD(amount) {
     return "$" + amount.toFixed(2).replace(/\.00$/, '');
-}
-
-export function getHelpMessage(serverId) {
-    return '‎\n' + // empty space to create a line break that won't be trimmed by Discord
-    '**SeerBot Sorcery Card Lookup**\n\n' +
-    'Place a full, partial, or misspelled card name within curly double brackets, e.g. **{{philosopher}}** to get the card\'s stats and a thumbnail image. Text casing or whitespace do not matter. The default card returned is its first printing (Alpha in most cases).\n\n' +
-
-    'The following  commands can also be placed within the brackets *before* the card name:\n\n' +
-
-    '**!** - for a larger image, ex: **{{!death dealer}}**\n' +
-    '**?** - for official FAQ rulings on the card, from *[curiosa.io](<https://curiosa.io/faqs>)*, ex: **{{?enchantress}}**\n' +
-    (!blockPriceLookups.includes(serverId) ? '**$** - to get the *[tcgplayer.com](<https://www.tcgplayer.com/categories/trading-and-collectible-card-games/sorcery-contested-realm/price-guides>)* lowest listed price, if available, ex: **{{$ruby core}}**\n\n' : '\n') +
-
-    'You can also place a "set code" after a *pipe* character *after* the card name to specify which set you would like, as in **{{critical strike | abt}}**.\n\n' +
-
-    'The current set codes are:\n\n' +
-
-    '**ALP** - Alpha\n' +
-    '**BET** - Beta\n' +
-    '**APC** - Alpha Preconstructed Deck\n' +
-    '**APP** - Alpha Pledge Pack\n' +
-    '**ABT** - Alpha Box Topper\n' +
-    '**BBT** - Beta Box Topper\n' +
-    '**P22** - 2022 Promo\n' +
-    '**P23** - 2023 Promo'
 }

@@ -13,8 +13,8 @@ export const QueryCode = Object.freeze({
 const QUERY_CODES = Object.values(QueryCode);
 
 /**
- * Matches cards info queries of the form {{card name}}, as well as handling
- * various query codes appended to the front of the intended card name.
+ * Matches card info queries of the form {{card name}}, as well as handling
+ * various query codes appended to the front or end of the intended card name.
  */
 export class QueryMatcher {
 
@@ -49,11 +49,13 @@ export class QueryMatcher {
                     // if query is {{}} ignore it entirely
                     return;
                 } else if (QUERY_CODES.includes(query.substring(0, 1))) {
+                    // handle if the query starts with a query code
                     queryCode = query.substring(0, 1);
                     query = query.substring(1, query.length).trim();
                 }
 
                 if (query.includes('|') && query.indexOf('|') !== query.length - 1) {
+                    // handle if the query contains the | along with a potential set code at the end
                     setCode = query.substring(query.indexOf('|') + 1, query.length).trim();
                     query = query.substring(0, query.indexOf('|')).trim();
                 }

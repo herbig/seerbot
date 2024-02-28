@@ -1,5 +1,3 @@
-import { devLog } from "./util.js";
-
 /**
  * Handles REST requests to the fourcores.xyz API.
  */
@@ -12,7 +10,7 @@ export class FourCoresAPI {
         const set = setCode === undefined ? '' : `&setCodes=${setCode}`;
         const url = `${this.#API}/cards?name=${cardName}${set}`;
 
-        devLog(url);
+        console.log(url);
 
         try {
             const response = await fetch(url);
