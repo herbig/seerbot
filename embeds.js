@@ -9,7 +9,7 @@ export function noMatchEmbed(match) {
 }
 
 // my own Discord id
-const DEV_USER = '424603890693177344';
+const DEV_DISCORD_ID = '424603890693177344';
 
 /**
  * Gets the Discord embed response for a rulings query.
@@ -26,7 +26,7 @@ export function rulingsEmbed(match, card, cardRulings) {
 
     // if the FAQ scraping breaks, tell them to give me a heads up 
     if (!cardRulings.isInitialized()) {
-        embed.setDescription(`Oops, something\'s up with rulings. Please ping <@${DEV_USER}> to fix it.`)
+        embed.setDescription(`Oops, something\'s up with rulings. Please ping <@${DEV_DISCORD_ID}> to fix it.`)
             .setColor(Color.FAIL);
     } else {
         
@@ -136,7 +136,7 @@ export function getHelpMessage(serverId) {
     '**P22** - 2022 Promo\n' +
     '**P23** - 2023 Promo\n\n' +
 
-    `Please ping <@${DEV_USER}> with any feedback or issues!`
+    `Please ping <@${DEV_DISCORD_ID}> with any feedback or issues!`
 }
 
 const CURIOSA_CARD_URL = 'https://curiosa.io/cards/';
@@ -160,10 +160,10 @@ function startCase(input) {
 }
 
 const Color  = Object.freeze({
-    EARTH: '#A79E81',
-    AIR: '#ACB4D4',
-    FIRE: '#E06638',
-    WATER: '#7BBDD9',
+    EARTH: '#a99e7d',
+    AIR: '#aab4d7',
+    FIRE: '#f25c24',
+    WATER: '#65bfdc',
     COLORLESS: '#221B17',
     GOLD: '#CCAC47',
 
