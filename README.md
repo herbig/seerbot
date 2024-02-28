@@ -28,6 +28,6 @@ When new sets are printed, the following steps will need to be taken:
 
 - update the backing API with the cards and their data
 - update `card_list.txt` with any new card names
-- add the card images to both slug-based and id based S3 buckets (or whatever image hosting is used), with a `{id}_hor` (horizontal) postfix for id based Site cards.
+- add the card images to id based S3 bucket (or whatever image hosting is used), with a `{id}_hor` (horizontal) postfix for Site cards.
 - update `replaceManaSymbols` if additional mana amounts appear on the new card's text
 - update `getHelpMessage`, `SetName` with the new set codes

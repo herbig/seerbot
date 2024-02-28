@@ -1,16 +1,5 @@
-import { SetName, cardSlug, Color, thresholdText, startCase, costEmoji, replaceManaSymbols, formatUSD, accentColor } from './util.js';
 import { Embed, EmbedBuilder } from 'discord.js';
-
-const CURIOSA_CARD_URL = 'https://curiosa.io/cards/';
-
-/** List of Discord server ids to not allow price lookups on. */
-export const blockPriceLookups = [
-    '769359301466652693', // Official Sorcery Discord
-];
-
-function imgURL(card) {
-    return process.env.IMG_URL_BASE + card.id + (card.category.toUpperCase() === 'SITE' ? '_hor' : '') + '.png';
-}
+import { cardSlug } from './util.js';
 
 export function noMatchEmbed(match) {
     const set = match.setCode ? ` in \"${match.setCode}\"` : '';
@@ -19,25 +8,25 @@ export function noMatchEmbed(match) {
         .setColor(Color.FAIL);
 }
 
+// my own Discord id
+const DEV_USER = '424603890693177344';
+
 /**
  * Gets the Discord embed response for a rulings query.
  * 
  * @param {string} cardName the full text name of the card
  * @returns {Embed} a Discord embed
  */
-export function rulingsEmbed(cardName, cardRulings) {
-    const slug = cardSlug(cardName);
+export function rulingsEmbed(match, card, cardRulings) {
+    const slug = cardSlug(match.cardName);
     const embed = new EmbedBuilder()
-        .setTitle(`Rulings for ${cardName}`)
-        // using slug based location, since we don't have card info here
-        // TODO we could request the card to remove these images as well
-        // as get the card's elements for the accent color
-        .setThumbnail(`https://sorcery-images.s3.amazonaws.com/${slug}.png`)
+        .setTitle(`Rulings for ${match.cardName}`)
+        .setThumbnail(imgURL(card))
         .setURL(CURIOSA_CARD_URL + slug);
 
     // if the FAQ scraping breaks, tell them to give me a heads up 
     if (!cardRulings.isInitialized()) {
-        embed.setDescription('Oops, something\'s up with rulings. Please ping @herbig to fix it.')
+        embed.setDescription(`Oops, something\'s up with rulings. Please ping <@${DEV_USER}> to fix it.`)
             .setColor(Color.FAIL);
     } else {
         
@@ -45,7 +34,7 @@ export function rulingsEmbed(cardName, cardRulings) {
         let description = '';
 
         if (faqs === undefined || faqs.length === 0) {
-            description = `No rulings available for ${cardName}.`;
+            description = `No rulings available for ${match.cardName}.`;
         } else {
             for (let i = 0; i < faqs.length; i++) {
                 if (i % 2 === 0) {
@@ -56,14 +45,14 @@ export function rulingsEmbed(cardName, cardRulings) {
             }
         }
         embed.setDescription(description)
-            .setColor(Color.SUCCESS);
+            .setColor(accentColor(card.elements));
     }
 
     return embed;
 }
 
 export function priceEmbed(match, card) {
-    const title = `${match.cardName} - ${SetName[card.setCode]}`;
+
     var description = '';
 
     for (const finish of card.finishes) {
@@ -75,20 +64,17 @@ export function priceEmbed(match, card) {
         }
     }
 
-    const slug = cardSlug(match.cardName);
+    const embed = new EmbedBuilder()
+        .setTitle(`${match.cardName} - ${SetName[card.setCode]}`)
+        .setURL(CURIOSA_CARD_URL + cardSlug(match.cardName))
+        .setThumbnail(imgURL(card));
 
     if (description === '') {
-        return new EmbedBuilder()
-            .setTitle(title)
-            .setURL(CURIOSA_CARD_URL + slug)
-            .setThumbnail(imgURL(card))
+        return embed
             .setDescription(`No price info for ${match.cardName}.`)
             .setColor(Color.FAIL);
     } else {
-        return new EmbedBuilder()
-            .setTitle(title)
-            .setURL(CURIOSA_CARD_URL + slug)
-            .setThumbnail(imgURL(card))
+        return embed
             .setDescription('*TCGPlayer.com - Lowest Listing Price*\n' + description)
             .setColor(accentColor(card.elements));
     }
@@ -148,5 +134,105 @@ export function getHelpMessage(serverId) {
     '**ABT** - Alpha Box Topper\n' +
     '**BBT** - Beta Box Topper\n' +
     '**P22** - 2022 Promo\n' +
-    '**P23** - 2023 Promo'
+    '**P23** - 2023 Promo\n\n' +
+
+    `Please ping <@${DEV_USER}> with any feedback or issues!`
+}
+
+const CURIOSA_CARD_URL = 'https://curiosa.io/cards/';
+
+function formatUSD(amount) {
+    return "$" + amount.toFixed(2).replace(/\.00$/, '');
+}
+
+/** List of Discord server ids to not allow price lookups on. */
+const blockPriceLookups = [
+    '769359301466652693', // Official Sorcery Discord
+];
+
+function imgURL(card) {
+    return process.env.IMG_URL_BASE + card.id + (card.category.toUpperCase() === 'SITE' ? '_hor' : '') + '.png';
+}
+
+function startCase(input) {
+    if (!input) return '';
+    return input.charAt(0).toUpperCase() + input.slice(1).toLowerCase();
+}
+
+const Color  = Object.freeze({
+    EARTH: '#A79E81',
+    AIR: '#ACB4D4',
+    FIRE: '#E06638',
+    WATER: '#7BBDD9',
+    COLORLESS: '#221B17',
+    GOLD: '#CCAC47',
+
+    FAIL: '#3F4248',
+});
+
+function accentColor(elements) {
+    if (elements.length === 0) {
+        return Color.COLORLESS;
+    } else if (elements.length === 1) {
+        return Color[elements[0].toUpperCase()];
+    } else {
+        return Color.GOLD;
+    }
+}
+
+const SetName  = Object.freeze({
+    APP: 'Alpha Pledge Pack',
+    APC: 'Alpha Precon',
+    ABT: 'Alpha Box Topper',
+    P22: '2022 Promo',
+    ALP: 'Alpha',
+    BET: 'Beta',
+    BBT: 'Beta Box Topper',
+    P23: '2023 Promo',
+});
+
+const ManaCostEmoji = [
+    '<:m_00:1210681536802717697>',
+    '<:m_01:1210681538077790221>',
+    '<:m_02:1210681539554447431>',
+    '<:m_03:1210681540586250322>',
+    '<:m_04:1210681541647405076>',
+    '<:m_05:1210681542808965200>',
+    '<:m_06:1210681543924777091>',
+    '<:m_07:1210681544960647269>',
+    '<:m_08:1210681875492905031>',
+    '<:m_09:1210681548089598003>',
+    '<:m_X:1210681877032206336>',
+];
+
+function costEmoji(manaCost) {
+    if (manaCost === '') return '';
+    if (manaCost.toUpperCase() == 'X') return ManaCostEmoji[ManaCostEmoji.length - 1];
+    return ManaCostEmoji[Number(manaCost)];
+}
+
+const ElementEmoji  = Object.freeze({
+    EARTH: '<:t_earth:1210681878198353931>',
+    FIRE: '<:t_fire:1210681555077435393>',
+    WATER: '<:t_water:1210681879661903933>',
+    AIR: '<:t_air:1210681551650558032>',
+});
+
+function thresholdText(threshold) {
+    return ElementEmoji.EARTH.repeat(threshold.earth) + 
+        ElementEmoji.FIRE.repeat(threshold.fire) + 
+        ElementEmoji.WATER.repeat(threshold.water) +
+        ElementEmoji.AIR.repeat(threshold.air);
+}
+
+function replaceManaSymbols(inputString) {
+    return inputString
+        .replace(/\(F\)/g, ElementEmoji.FIRE)
+        .replace(/\(E\)/g, ElementEmoji.EARTH)
+        .replace(/\(A\)/g, ElementEmoji.AIR)
+        .replace(/\(W\)/g, ElementEmoji.WATER)
+        .replace(/\(0\)/g, ManaCostEmoji[0])
+        .replace(/\(1\)/g, ManaCostEmoji[1])
+        .replace(/\(2\)/g, ManaCostEmoji[2])
+        .replace(/\(3\)/g, ManaCostEmoji[3]);
 }

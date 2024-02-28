@@ -1,4 +1,4 @@
-import { getHelpMessage, blockPriceLookups, defaultEmbed, imageEmbed, noMatchEmbed, priceEmbed, rulingsEmbed } from './embeds.js';
+import { getHelpMessage, defaultEmbed, imageEmbed, noMatchEmbed, priceEmbed, rulingsEmbed } from './embeds.js';
 import { DiscordBot, randomizeActivity } from './discord_bot.js';
 import { QueryCode, QueryMatcher } from './query_matcher.js';
 import { FourCoresAPI } from './fourcores_api.js';
@@ -28,23 +28,30 @@ discord.onNewMessage(msg => {
     }
 
     const embedPromises = queryMatcher.getMatches(msg).map(async match => {
+
         if (match.cardName === undefined) {
+            // the query didn't match an existing card name
             return noMatchEmbed(match);
         } else {
-            if (match.queryCode === QueryCode.RULINGS) {
-                return rulingsEmbed(match.cardName, cardRulings);
+
+            const card = await api.getCard(match.cardName, match.setCode);
+
+            if (!card) {
+                // the card name has no printing in the given set code
+                // TODO also given for general API errors, handle that separately
+                // TODO we could also give a different message if the card exists but the set code doesn't
+                return noMatchEmbed(match);
             } else {
-
-                const card = await api.getCard(match.cardName, match.setCode);
-
-                if (!card) {
-                    return noMatchEmbed(match);
-                } else if (match.queryCode === QueryCode.PRICE && !blockPriceLookups.includes(msg.guild.id)) {
-                    return priceEmbed(match, card);
-                } else if (match.queryCode === QueryCode.IMAGE) {
-                    return imageEmbed(match, card);
-                } else {
-                    return defaultEmbed(match, card);
+                // card data was retrieved successfully
+                switch(match.queryCode) {
+                    case QueryCode.RULINGS:
+                        return rulingsEmbed(match, card, cardRulings);
+                    case QueryCode.PRICE:
+                        return priceEmbed(match, card);
+                    case QueryCode.IMAGE:
+                        return imageEmbed(match, card);
+                    default:
+                        return defaultEmbed(match, card);
                 }
             }
         }
