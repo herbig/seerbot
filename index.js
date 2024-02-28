@@ -95,7 +95,7 @@ discord.onNewMessage(msg => {
                     // This only currently impacts Azuridge Caravan, which in the 
                     // database has all available minion subtypes
                     const description = 
-                        '**' + startCase(card.category) + 
+                        '**' + startCase(card.rarity) + ' — ' + startCase(card.category) + 
                             (card.types.length > 0 ? ' — ' + card.types.map(s => startCase(s)).join(' ') : '') + 
                             (card.subtypes.length === 1 ? ' — ' + startCase(card.subtypes[0]) : '') + '**\n' +
                         (card.power ? 'Power ' + card.power + '\n' : '') +
