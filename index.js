@@ -1,4 +1,4 @@
-import { getHelpMessage, defaultEmbed, imageEmbed, noMatchEmbed, priceEmbed, rulingsEmbed } from './embeds.js';
+import { getHelpMessage, defaultEmbed, imageEmbed, noMatchEmbed, pricesEmbed, rulingsEmbed } from './embeds.js';
 import { DiscordBot, randomizeActivity } from './discord_bot.js';
 import { QueryCode, QueryMatcher } from './query_matcher.js';
 import { FourCoresAPI } from './fourcores_api.js';
@@ -34,20 +34,27 @@ discord.onNewMessage(msg => {
             return noMatchEmbed(match);
         } else {
 
-            const card = await api.getCard(match.cardName, match.setCode);
+            const cards = await api.getCards(match.cardName, match.setCode);
 
-            if (!card) {
+            if (!cards) {
                 // the card name has no printing in the given set code
                 // TODO also given for general API errors, handle that separately
                 // TODO we could also give a different message if the card exists but the set code doesn't
                 return noMatchEmbed(match);
             } else {
-                // card data was retrieved successfully
+
+                // unless we're displaying prices, we only need the first card in
+                // the list.  This will either be the single card requested,
+                // in the case of a specific set code lookup, or the first one
+                // in the database, which is the first printing of the card
+                const card = cards[0];
+
+                // card list data was retrieved successfully
                 switch(match.queryCode) {
                     case QueryCode.RULINGS:
                         return rulingsEmbed(match, card, cardRulings);
                     case QueryCode.PRICE:
-                        return priceEmbed(match, card);
+                        return pricesEmbed(match, cards); // provide the whole list
                     case QueryCode.IMAGE:
                         return imageEmbed(match, card);
                     default:

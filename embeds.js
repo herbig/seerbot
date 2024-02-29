@@ -51,23 +51,35 @@ export function rulingsEmbed(match, card, cardRulings) {
     return embed;
 }
 
-export function priceEmbed(match, card) {
+export function pricesEmbed(match, cards) {
 
     var description = '';
 
-    for (const finish of card.finishes) {
-        if (finish.tcgPlayerId !== null) {
-            const url = `https://www.tcgplayer.com/product/${finish.tcgPlayerId}`;
-            const price = finish.lowPriceUSD === null ? 'None listed' : formatUSD(finish.lowPriceUSD);
-            description = description + 
-                '**[' + startCase(finish.type) + `](${url})**\n` + price + '\n';
+    for (const card of cards) {
+
+        var cardPrice = '';
+
+        for (const finish of card.finishes) {
+            if (finish.tcgPlayerId !== null) {
+                const url = `https://www.tcgplayer.com/product/${finish.tcgPlayerId}`;
+                const price = finish.lowPriceUSD === null ? 'None listed' : formatUSD(finish.lowPriceUSD);
+                cardPrice = cardPrice + 
+                    '**[' + startCase(finish.type) + `](${url})**\n` + price + '\n';
+            }
         }
+        
+        if (cardPrice !== '') {
+            cardPrice = `**${SetName[card.setCode]}**\n` + cardPrice + '\n';
+        }
+
+        description = description + cardPrice;
     }
 
+    const firstCard = cards[0];
+
     const embed = new EmbedBuilder()
-        .setTitle(`${match.cardName} - ${SetName[card.setCode]}`)
-        .setURL(CURIOSA_CARD_URL + cardSlug(match.cardName))
-        .setThumbnail(imgURL(card));
+        .setTitle(`${match.cardName} Prices`)
+        .setThumbnail(imgURL(firstCard));
 
     if (description === '') {
         return embed
@@ -75,8 +87,8 @@ export function priceEmbed(match, card) {
             .setColor(Color.FAIL);
     } else {
         return embed
-            .setDescription('*TCGPlayer.com - Lowest Listing Price*\n' + description)
-            .setColor(accentColor(card.elements));
+            .setDescription('*TCGPlayer.com - Lowest Listing Price*\n\n' + description)
+            .setColor(accentColor(firstCard.elements));
     }
 }
 

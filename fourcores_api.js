@@ -13,13 +13,13 @@ export class FourCoresAPI {
         ttl: 1000 * 60 * 180,
     });
 
-    async getCard(cardName, setCode) {
+    async getCards(cardName, setCode) {
 
         const set = setCode === undefined ? '' : `&setCodes=${setCode.toLowerCase()}`;
         const url = `${this.#API}/cards?name=${cardName}${set}`;
 
         if (this.#cache.has(url)) {
-            console.log('Returning cached card: ' + cardName);
+            console.log('Returning cached cards: ' + cardName);
             return this.#cache.get(url);
         }
 
@@ -30,12 +30,14 @@ export class FourCoresAPI {
 
             if (!response.ok) return undefined;
 
-            const data = await response.json();
-            const card = data.length === 0 ? null : data[0];
+            const cards = await response.json();
 
-            if (card) this.#cache.set(url, card);
-            
-            return card;
+            if (cards && cards.length !== 0) {
+                this.#cache.set(url, cards);
+                return cards;
+            } else {
+                return null;
+            }
         } catch (error) {
             return undefined;
         }
