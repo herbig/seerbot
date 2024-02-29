@@ -64,7 +64,7 @@ export function pricesEmbed(match, cards) {
                 const url = `https://www.tcgplayer.com/product/${finish.tcgPlayerId}`;
                 const price = finish.lowPriceUSD === null ? 'None listed' : formatUSD(finish.lowPriceUSD);
                 cardPrice = cardPrice + 
-                    '**[' + startCase(finish.type) + `](${url})**\n` + price + '\n';
+                    '**[' + startCase(finish.type) + `](${url})** — ` + price + '\n';
             }
         }
         
@@ -87,7 +87,7 @@ export function pricesEmbed(match, cards) {
             .setColor(Color.FAIL);
     } else {
         return embed
-            .setDescription('*TCGPlayer.com - Lowest Listing Price*\n\n' + description)
+            .setDescription('*TCGPlayer.com — Lowest Listing Price*\n\n' + description)
             .setColor(accentColor(firstCard.elements));
     }
 }
@@ -131,22 +131,22 @@ export function getHelpMessage(serverId) {
 
     'The following  commands can also be placed within the brackets *before* the card name:\n\n' +
 
-    '**!** - for a larger image, ex: **{{!death dealer}}**\n' +
-    '**?** - for official FAQ rulings on the card, from *[curiosa.io](<https://curiosa.io/faqs>)*, ex: **{{?enchantress}}**\n' +
-    (!blockPriceLookups.includes(serverId) ? '**$** - to get the *[tcgplayer.com](<https://www.tcgplayer.com/categories/trading-and-collectible-card-games/sorcery-contested-realm/price-guides>)* lowest listed price, if available, ex: **{{$ruby core}}**\n\n' : '\n') +
+    '**!** — for a larger image, ex: **{{!death dealer}}**\n' +
+    '**?** — for official FAQ rulings on the card, from *[curiosa.io](<https://curiosa.io/faqs>)*, ex: **{{?enchantress}}**\n' +
+    (!blockPriceLookups.includes(serverId) ? '**$** — to get the *[tcgplayer.com](<https://www.tcgplayer.com/categories/trading-and-collectible-card-games/sorcery-contested-realm/price-guides>)* lowest listed price, if available, ex: **{{$ruby core}}**\n\n' : '\n') +
 
     'You can also place a "set code" after a *pipe* character *after* the card name to specify which set you would like, as in **{{critical strike | abt}}**.\n\n' +
 
     'The current set codes are:\n\n' +
 
-    '**ALP** - Alpha\n' +
-    '**BET** - Beta\n' +
-    '**APC** - Alpha Preconstructed Deck\n' +
-    '**APP** - Alpha Pledge Pack\n' +
-    '**ABT** - Alpha Box Topper\n' +
-    '**BBT** - Beta Box Topper\n' +
-    '**P22** - 2022 Promo\n' +
-    '**P23** - 2023 Promo\n\n' +
+    '**ALP** — Alpha\n' +
+    '**BET** — Beta\n' +
+    '**APC** — Alpha Preconstructed Deck\n' +
+    '**APP** — Alpha Pledge Pack\n' +
+    '**ABT** — Alpha Box Topper\n' +
+    '**BBT** — Beta Box Topper\n' +
+    '**P22** — 2022 Promo\n' +
+    '**P23** — 2023 Promo\n\n' +
 
     `Please ping <@${DEV_DISCORD_ID}> with any feedback or issues!`
 }
