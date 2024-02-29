@@ -16,7 +16,7 @@ export class FourCoresAPI {
     async getCards(cardName, setCode) {
 
         const set = setCode === undefined ? '' : `&setCodes=${setCode.toLowerCase()}`;
-        const url = `${this.#API}/cards?name=${cardName}${set}`;
+        const url = `${this.#API}/cards?name=${encodeURIComponent(cardName)}${set}`;
 
         if (this.#cache.has(url)) {
             console.log('Returning cached cards: ' + cardName);

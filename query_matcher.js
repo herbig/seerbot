@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import Fuse from "fuse.js";
 import path from 'path';
+import { CLOSE_QUERY, OPEN_QUERY } from './embeds.js';
 
 export const QueryCode = Object.freeze({
     RULINGS: '?',
@@ -13,7 +14,7 @@ export const QueryCode = Object.freeze({
 const QUERY_CODES = Object.values(QueryCode);
 
 /**
- * Matches card info queries of the form {{card name}}, as well as handling
+ * Matches card info queries of the form ((card name)), as well as handling
  * various query codes appended to the front or end of the intended card name.
  */
 export class QueryMatcher {
@@ -35,18 +36,28 @@ export class QueryMatcher {
      */
     getMatches(discordMsg) {
 
-        // match on the pattern {{SOMETEXT}}
-        const matches = discordMsg.content.match(/\{\{(.*?)\}\}/g);
+        // match on the pattern ((SOME TEXT)) or {{SOME TEXT}}
+        // TODO (()) is far better as a mobile experience so eventually
+        // we'd like to get rid of {{}} altogether
+        const matches = discordMsg.content.match(/\(\((.*?)\)\)|\{\{(.*?)\}\}/g);
+        // TODO this will be the finished matcher
+        // const matches = discordMsg.content.match(/\(\((.*?)\)\)/g);
+
         const cardQueries = [];
     
         if (matches) {
             matches.forEach((match) => {
-                let query = match.replace('{{', '').replace('}}', '').trim();
+                let query = match
+                    .replace(OPEN_QUERY, '')
+                    .replace(CLOSE_QUERY, '')
+                    .replace('{{', '') // TODO remove these once folks start using (())
+                    .replace('}}', '')
+                    .trim();
                 let queryCode = undefined;
                 let setCode = undefined;
 
                 if (query === '') {
-                    // if query is {{}} ignore it entirely
+                    // if query is (()) ignore it entirely
                     return;
                 } else if (QUERY_CODES.includes(query.substring(0, 1))) {
                     // handle if the query starts with a query code

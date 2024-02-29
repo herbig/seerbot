@@ -1,4 +1,4 @@
-import { getHelpMessage, defaultEmbed, imageEmbed, noMatchEmbed, pricesEmbed, rulingsEmbed } from './embeds.js';
+import { getHelpMessage, defaultEmbed, imageEmbed, noMatchEmbed, pricesEmbed, rulingsEmbed, CLOSE_QUERY, OPEN_QUERY } from './embeds.js';
 import { DiscordBot, randomizeActivity } from './discord_bot.js';
 import { QueryCode, QueryMatcher } from './query_matcher.js';
 import { FourCoresAPI } from './fourcores_api.js';
@@ -20,9 +20,9 @@ discord.onNewMessage(msg => {
     // if it's a bot message, don't do anything
     if (msg.author.bot) return;
 
-    // detect {{help}} query and respond with the help message
+    // detect ((help)) query and respond with the help message
     // this will ignore other card queries and only respond with help
-    if (msg.content.replace(/\s+/g, '').toLowerCase().includes('{{help}}')) {
+    if (msg.content.replace(/\s+/g, '').toLowerCase().includes(`${OPEN_QUERY}help${CLOSE_QUERY}`)) {
         msg.reply(getHelpMessage(msg.guild.id));
         return;
     }

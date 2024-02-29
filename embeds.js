@@ -1,6 +1,9 @@
 import { Embed, EmbedBuilder } from 'discord.js';
 import { cardSlug } from './util.js';
 
+export const OPEN_QUERY = '((';
+export const CLOSE_QUERY = '))';
+
 export function noMatchEmbed(match) {
     const set = match.setCode ? ` in \"${match.setCode}\"` : '';
     return new EmbedBuilder()
@@ -127,15 +130,15 @@ export function defaultEmbed(match, card) {
 export function getHelpMessage(serverId) {
     return '‎\n' + // empty space to create a line break that won't be trimmed by Discord
     '**SeerBot Sorcery Card Lookup**\n\n' +
-    'Place a full, partial, or misspelled card name within curly double brackets, e.g. **{{philosopher}}** to get the card\'s stats and a thumbnail image. Text casing or whitespace do not matter. The default card returned is its first printing (Alpha in most cases).\n\n' +
+    `Place a full, partial, or misspelled card name within curly double brackets, e.g. **${OPEN_QUERY}philosopher${CLOSE_QUERY}** to get the card\'s stats and a thumbnail image. Text casing or whitespace do not matter. The default card returned is its first printing (Alpha in most cases).\n\n` +
 
     'The following  commands can also be placed within the brackets *before* the card name:\n\n' +
 
-    '**!** — for a larger image, ex: **{{!death dealer}}**\n' +
-    '**?** — for official FAQ rulings on the card, from *[curiosa.io](<https://curiosa.io/faqs>)*, ex: **{{?enchantress}}**\n' +
-    (!blockPriceLookups.includes(serverId) ? '**$** — to get the *[tcgplayer.com](<https://www.tcgplayer.com/categories/trading-and-collectible-card-games/sorcery-contested-realm/price-guides>)* lowest listed price, if available, ex: **{{$ruby core}}**\n\n' : '\n') +
+    `**!** — for a larger image, ex: **${OPEN_QUERY}!death dealer${CLOSE_QUERY}**\n` +
+    `**?** — for official FAQ rulings on the card, from *[curiosa.io](<https://curiosa.io/faqs>)*, ex: **${OPEN_QUERY}?enchantress${CLOSE_QUERY}**\n` +
+    (!blockPriceLookups.includes(serverId) ? `**$** — to get the *[tcgplayer.com](<https://www.tcgplayer.com/categories/trading-and-collectible-card-games/sorcery-contested-realm/price-guides>)* lowest listed price, if available, ex: **${OPEN_QUERY}$ruby core${CLOSE_QUERY}**\n\n` : '\n') +
 
-    'You can also place a "set code" after a *pipe* character *after* the card name to specify which set you would like, as in **{{critical strike | abt}}**.\n\n' +
+    `You can also place a "set code" after a *pipe* character *after* the card name to specify which set you would like, as in **${OPEN_QUERY}critical strike | abt${CLOSE_QUERY}**.\n\n` +
 
     'The current set codes are:\n\n' +
 
