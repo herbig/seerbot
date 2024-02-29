@@ -27,7 +27,12 @@ discord.onNewMessage(msg => {
         return;
     }
 
+    let bracketWarn = false;
+
     const embedPromises = queryMatcher.getMatches(msg).map(async match => {
+
+        // TODO can remove this eventually
+        if (match.brackets) bracketWarn = true;
 
         if (match.cardName === undefined) {
             // the query didn't match an existing card name
@@ -63,6 +68,10 @@ discord.onNewMessage(msg => {
             }
         }
     });
+
+    if (bracketWarn) {
+        msg.reply('Hey! Please switch to using (()), the {{}} brackets will eventually be removed for queries.  Use ((help)) to see the full set of options.');
+    }
 
     // wait for all promises to resolve then send embeds
     Promise.all(embedPromises).then(embeds => {

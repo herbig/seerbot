@@ -72,7 +72,7 @@ export class QueryMatcher {
                 }
 
                 const cardName = this.#fuzzySearch.search(query);
-                cardQueries.push({ queryCode: queryCode, query: query, cardName: cardName, setCode: setCode })
+                cardQueries.push({ queryCode: queryCode, query: query, cardName: cardName, setCode: setCode, brackets: match.trim().startsWith('{{') })
             });
         }
     
