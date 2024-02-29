@@ -130,9 +130,9 @@ export function defaultEmbed(match, card) {
 export function getHelpMessage(serverId) {
     return '‎\n' + // empty space to create a line break that won't be trimmed by Discord
     '**SeerBot Sorcery Card Lookup**\n\n' +
-    `Place a full, partial, or misspelled card name within curly double brackets, e.g. **${OPEN_QUERY}philosopher${CLOSE_QUERY}** to get the card\'s stats and a thumbnail image. Text casing or whitespace do not matter. The default card returned is its first printing (Alpha in most cases).\n\n` +
+    `Place a full, partial, or misspelled card name within double parenthesis, e.g. **${OPEN_QUERY}philosopher${CLOSE_QUERY}** to get the card\'s stats and a thumbnail image. Text casing or whitespace do not matter. The default card returned is its first printing (Alpha in most cases).\n\n` +
 
-    'The following  commands can also be placed within the brackets *before* the card name:\n\n' +
+    'The following  commands can also be placed within the parenthesis *before* the card name:\n\n' +
 
     `**!** — for a larger image, ex: **${OPEN_QUERY}!death dealer${CLOSE_QUERY}**\n` +
     `**?** — for official FAQ rulings on the card, from *[curiosa.io](<https://curiosa.io/faqs>)*, ex: **${OPEN_QUERY}?enchantress${CLOSE_QUERY}**\n` +
