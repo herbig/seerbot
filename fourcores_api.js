@@ -1,4 +1,5 @@
 import { LRUCache } from 'lru-cache';
+import { log } from './util.js';
 
 /**
  * Handles REST requests to the fourcores.xyz API.
@@ -19,11 +20,11 @@ export class FourCoresAPI {
         const url = `${this.#API}/cards?name=${encodeURIComponent(cardName)}${set}`;
 
         if (this.#cache.has(url)) {
-            console.log('Returning cached cards: ' + cardName);
+            log('Returning cached cards: ' + cardName);
             return this.#cache.get(url);
         }
 
-        console.log(url);
+        log(url);
 
         try {
             const response = await fetch(url);

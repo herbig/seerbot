@@ -14,10 +14,14 @@ Then
 You will need to have set up a Discord bot in their developer portal with the *Message Content Intent* permission, as well as the following values in your local `.env` file:
 
 ```
+# Sentry DSN, for analytics
+SENTRY_DSN={Sentry DSN}
 # your Discord bot token
 BOT_TOKEN={Discord bot token}
 # base URL for hosted card images
 IMG_URL_BASE='https://sorcery-api.s3.amazonaws.com/'
+# prevent things like console logging / analytics from firing in dev
+NODE_ENV='dev'
 ```
 
 # Emoji

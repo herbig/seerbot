@@ -12,6 +12,7 @@
   "author": "",
   "license": "GPLv3",
   "dependencies": {
+    "@sentry/node": "^7.104.0",
     "chromedriver": "^122.0.3",
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.5",

@@ -40,8 +40,6 @@ export class QueryMatcher {
         // TODO (()) is far better as a mobile experience so eventually
         // we'd like to get rid of {{}} altogether
         const matches = discordMsg.content.match(/\(\((.*?)\)\)|\{\{(.*?)\}\}/g);
-        // TODO this will be the finished matcher
-        // const matches = discordMsg.content.match(/\(\((.*?)\)\)/g);
 
         const cardQueries = [];
     

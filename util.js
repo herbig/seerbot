@@ -9,3 +9,8 @@ export function cardSlug(name) {
         .replace(/[\s\-]+/g, '_')    // Replace spaces or dashes with underscores
         .replace(/[^a-zA-Z_]/g, ''); // Remove non-alphabetic characters (except for underscores)
 }
+
+export function log(message) {
+    if (process.env.NODE_ENV !== 'dev') return;
+    console.log(message);
+}

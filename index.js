@@ -3,12 +3,14 @@ import { DiscordBot, randomizeActivity } from './discord_bot.js';
 import { QueryCode, QueryMatcher } from './query_matcher.js';
 import { FourCoresAPI } from './fourcores_api.js';
 import { CardRulings } from './card_rulings.js';
+import { Analytics } from './analytics.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
 const queryMatcher = new QueryMatcher('card_list.txt');
 const discord = new DiscordBot(process.env.BOT_TOKEN);
 const cardRulings = new CardRulings();
+const analytics = new Analytics();
 const api = new FourCoresAPI();
 
 discord.onReady(async () => {
@@ -30,6 +32,8 @@ discord.onNewMessage(msg => {
     let bracketWarn = false;
 
     const embedPromises = queryMatcher.getMatches(msg).map(async match => {
+
+        analytics.logQuery(match);
 
         // TODO can remove this eventually
         if (match.brackets) bracketWarn = true;
