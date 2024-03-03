@@ -1,4 +1,4 @@
-import { getHelpMessage, defaultEmbed, imageEmbed, noMatchEmbed, pricesEmbed, rulingsEmbed, CLOSE_QUERY, OPEN_QUERY } from './embeds.js';
+import { getHelpMessage, noSuchCardEmbed, defaultEmbed, imageEmbed, notInSetEmbed, pricesEmbed, rulingsEmbed, CLOSE_QUERY, OPEN_QUERY } from './embeds.js';
 import { DiscordBot, randomizeActivity } from './discord_bot.js';
 import { QueryCode, QueryMatcher } from './query_matcher.js';
 import { FourCoresAPI } from './fourcores_api.js';
@@ -9,11 +9,11 @@ dotenv.config();
 
 const queryMatcher = new QueryMatcher('card_list.txt');
 const discord = new DiscordBot(process.env.BOT_TOKEN);
-const cardRulings = new CardRulings();
 const analytics = new Analytics();
-const api = new FourCoresAPI();
+const cardRulings = new CardRulings(analytics);
+const api = new FourCoresAPI(analytics);
 
-discord.onReady(async () => {
+discord.onReady(() => {
     randomizeActivity(discord);
 });
 
@@ -26,6 +26,7 @@ discord.onNewMessage(msg => {
     // this will ignore other card queries and only respond with help
     if (msg.content.replace(/\s+/g, '').toLowerCase().includes(`${OPEN_QUERY}help${CLOSE_QUERY}`)) {
         msg.reply(getHelpMessage(msg.guild.id));
+        analytics.logHelp();
         return;
     }
 
@@ -40,7 +41,7 @@ discord.onNewMessage(msg => {
 
         if (match.cardName === undefined) {
             // the query didn't match an existing card name
-            return noMatchEmbed(match);
+            return noSuchCardEmbed(match);
         } else {
 
             const cards = await api.getCards(match.cardName, match.setCode);
@@ -48,26 +49,23 @@ discord.onNewMessage(msg => {
             if (!cards) {
                 // the card name has no printing in the given set code
                 // TODO also given for general API errors, handle that separately
-                // TODO we could also give a different message if the card exists but the set code doesn't
-                return noMatchEmbed(match);
+                return notInSetEmbed(match);
             } else {
-
+                // card list data was retrieved successfully
+               
                 // unless we're displaying prices, we only need the first card in
                 // the list.  This will either be the single card requested,
                 // in the case of a specific set code lookup, or the first one
                 // in the database, which is the first printing of the card
-                const card = cards[0];
-
-                // card list data was retrieved successfully
                 switch(match.queryCode) {
                     case QueryCode.RULINGS:
-                        return rulingsEmbed(match, card, cardRulings);
+                        return rulingsEmbed(match, cards[0], cardRulings);
                     case QueryCode.PRICE:
                         return pricesEmbed(match, cards); // provide the whole list
                     case QueryCode.IMAGE:
-                        return imageEmbed(match, card);
+                        return imageEmbed(match, cards[0]);
                     default:
-                        return defaultEmbed(match, card);
+                        return defaultEmbed(match, cards[0]);
                 }
             }
         }

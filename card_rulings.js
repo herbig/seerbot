@@ -6,12 +6,21 @@ export class CardRulings {
 
     #faqUrl = 'https://curiosa.io/faqs';
     #rulings;
+    #analytics;
 
-    constructor() { 
+    constructor(analytics) { 
+        this.#analytics = analytics;
+
         // load the rulings cache when the app starts
-        // Heroku restarts the app once a day, so it
-        // should always have the latest 
         this.#loadRulings();
+
+        // Heroku restarts the app once a day, so it
+        // should always have the latest anyway, but
+        // best not to rely on the deployment provider
+        setInterval(() => {
+            // update every 24 hours
+            this.#loadRulings();
+        }, 24 * 60 * 60 * 1000);
     }
 
     async #loadRulings() {
@@ -56,6 +65,7 @@ export class CardRulings {
         } catch (error) {
             // set an empty map
             this.#rulings = new Map();
+            this.#analytics.logError('issue parsing rulings', error);
         } finally {
             driver.quit();
         }

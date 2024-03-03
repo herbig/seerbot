@@ -22,6 +22,8 @@ BOT_TOKEN={Discord bot token}
 IMG_URL_BASE='https://sorcery-api.s3.amazonaws.com/'
 # prevent things like console logging / analytics from firing in dev
 NODE_ENV='dev'
+# Discord id of the app's maintainer (me)
+DEV_DISCORD_ID={discord id}
 ```
 
 # Emoji

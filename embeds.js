@@ -4,15 +4,17 @@ import { cardSlug } from './util.js';
 export const OPEN_QUERY = '((';
 export const CLOSE_QUERY = '))';
 
-export function noMatchEmbed(match) {
-    const set = match.setCode ? ` in \"${match.setCode}\"` : '';
+export function noSuchCardEmbed(match) {
     return new EmbedBuilder()
-        .setDescription(`No card found for \"${match.query}\"${set}`)
+        .setDescription(`No card found for \"${match.query}\".`)
         .setColor(Color.FAIL);
 }
 
-// my own Discord id
-const DEV_DISCORD_ID = '424603890693177344';
+export function notInSetEmbed(match) {
+    return new EmbedBuilder()
+        .setDescription(`${match.cardName} not found in \"${match.setCode}\".`)
+        .setColor(Color.FAIL);
+}
 
 /**
  * Gets the Discord embed response for a rulings query.
@@ -29,7 +31,7 @@ export function rulingsEmbed(match, card, cardRulings) {
 
     // if the FAQ scraping breaks, tell them to give me a heads up 
     if (!cardRulings.isInitialized()) {
-        embed.setDescription(`Oops, something\'s up with rulings. Please ping <@${DEV_DISCORD_ID}> to fix it.`)
+        embed.setDescription(`Oops, something\'s up with rulings. Please ping <@${process.env.DEV_DISCORD_ID}> to fix it.`)
             .setColor(Color.FAIL);
     } else {
         
@@ -151,7 +153,7 @@ export function getHelpMessage(serverId) {
     '**P22** — 2022 Promo\n' +
     '**P23** — 2023 Promo\n\n' +
 
-    `Please ping <@${DEV_DISCORD_ID}> with any feedback or issues!`
+    `Please ping <@${process.env.DEV_DISCORD_ID}> with any feedback or issues!`
 }
 
 const CURIOSA_CARD_URL = 'https://curiosa.io/cards/';

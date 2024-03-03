@@ -14,17 +14,23 @@ export class FourCoresAPI {
         ttl: 1000 * 60 * 180,
     });
 
+    #analytics;
+
+    constructor(analytics) { 
+        this.#analytics = analytics;
+    }
+
     async getCards(cardName, setCode) {
 
         const set = setCode === undefined ? '' : `&setCodes=${setCode.toLowerCase()}`;
         const url = `${this.#API}/cards?name=${encodeURIComponent(cardName)}${set}`;
 
         if (this.#cache.has(url)) {
-            log('Returning cached cards: ' + cardName);
+            log('Cached: ' + url);
             return this.#cache.get(url);
         }
 
-        log(url);
+        log('Fetching: ' + url);
 
         try {
             const response = await fetch(url);
@@ -40,6 +46,7 @@ export class FourCoresAPI {
                 return null;
             }
         } catch (error) {
+            this.#analytics.logError('api error', error);
             return undefined;
         }
     }

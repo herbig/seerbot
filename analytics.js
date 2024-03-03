@@ -6,8 +6,16 @@ export class Analytics {
         Sentry.init({ dsn: process.env.SENTRY_DSN });
     }
 
+    logHelp() {
+        this.#captureEvent('help', 'log');
+    }
+
     logQuery(matchData) {
         this.#captureEvent('query', 'log', matchData);
+    }
+
+    logError(message, error) {
+        this.#captureEvent(message, 'error', error);
     }
 
     // level options are 'error', 'warning', 'log', or 'info'
