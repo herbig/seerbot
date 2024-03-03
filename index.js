@@ -4,6 +4,7 @@ import { QueryCode, QueryMatcher } from './query_matcher.js';
 import { FourCoresAPI } from './fourcores_api.js';
 import { CardRulings } from './card_rulings.js';
 import { Analytics } from './analytics.js';
+import { chunkArray } from './util.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -75,8 +76,16 @@ discord.onNewMessage(msg => {
         msg.reply('Hey! Please switch to using (()), the {{}} brackets will eventually be removed for queries.  Use ((help)) to see the full set of options.');
     }
 
-    // wait for all promises to resolve then send embeds
-    Promise.all(embedPromises).then(embeds => {
-        if (embeds.length > 0) msg.channel.send({ embeds: embeds });
-    });
+    // if the only query was empty (()), this would be 0
+    if (embedPromises.length > 0) {
+        // Discord only allows 10 embeds per message, 
+        // so break responses into chunks
+        const chunked = chunkArray(embedPromises, 10);
+        for (const chunck of chunked) {
+            // wait for all promises to resolve then send embeds
+            Promise.all(chunck).then(embeds => {
+                msg.channel.send({ embeds: embeds });
+            });
+        }
+    }
 });

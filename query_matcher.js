@@ -73,8 +73,12 @@ export class QueryMatcher {
                 cardQueries.push({ queryCode: queryCode, query: query, cardName: cardName, setCode: setCode, brackets: match.trim().startsWith('{{') })
             });
         }
+
+        // dedupe queries so there's only one response for the 
+        // same card / code multiple times in the message
+        const deduped = Array.from(new Set(cardQueries.map(obj => JSON.stringify(obj)))).map(str => JSON.parse(str));
     
-        return cardQueries;
+        return deduped;
     }
 }
 
