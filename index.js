@@ -1,4 +1,4 @@
-import { getHelpMessage, noSuchCardEmbed, defaultEmbed, imageEmbed, notInSetEmbed, pricesEmbed, rulingsEmbed, CLOSE_QUERY, OPEN_QUERY } from './embeds.js';
+import { getHelpMessage, noSuchSetEmbed, noSuchCardEmbed, defaultEmbed, imageEmbed, notInSetEmbed, pricesEmbed, rulingsEmbed, CLOSE_QUERY, OPEN_QUERY } from './embeds.js';
 import { DiscordBot, randomizeActivity } from './discord_bot.js';
 import { QueryCode, QueryMatcher } from './query_matcher.js';
 import { CardRulings } from './card_rulings.js';
@@ -42,9 +42,11 @@ discord.onNewMessage(msg => {
 
             const cards = await api.getCards(match.cardName, match.setCode);
 
-            if (!cards) {
-                // the card name has no printing in the given set code
-                // TODO also given for general API errors, handle that separately
+            if (cards === undefined) {
+                // the set code is invalid, (TODO or the API had an error)
+                return noSuchSetEmbed(match);
+            } else if (cards === null) {
+                // the card name has no printing in the given (valid) set code
                 return notInSetEmbed(match);
             } else {
                 // card list data was retrieved successfully

@@ -10,9 +10,15 @@ export function noSuchCardEmbed(match) {
         .setColor(Color.FAIL);
 }
 
+export function noSuchSetEmbed(match) {
+    return new EmbedBuilder()
+        .setDescription(`\"${match.setCode}\" is not a valid set code.`)
+        .setColor(Color.FAIL);
+}
+
 export function notInSetEmbed(match) {
     return new EmbedBuilder()
-        .setDescription(`${match.cardName} not found in \"${match.setCode}\".`)
+        .setDescription(`${match.cardName} not found in \"${SetName[match.setCode.toUpperCase()]}\".`)
         .setColor(Color.FAIL);
 }
 
