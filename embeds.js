@@ -242,5 +242,12 @@ function replaceManaSymbols(inputString) {
         .replace(/\(0\)/g, ManaCostEmoji[0])
         .replace(/\(1\)/g, ManaCostEmoji[1])
         .replace(/\(2\)/g, ManaCostEmoji[2])
-        .replace(/\(3\)/g, ManaCostEmoji[3]);
+        .replace(/\(3\)/g, ManaCostEmoji[3])
+        .replace(/\(4\)/g, ManaCostEmoji[4])
+        .replace(/\(5\)/g, ManaCostEmoji[5])
+        .replace(/\(6\)/g, ManaCostEmoji[6])
+        .replace(/\(7\)/g, ManaCostEmoji[7])
+        .replace(/\(8\)/g, ManaCostEmoji[8])
+        .replace(/\(9\)/g, ManaCostEmoji[9])
+        .replace(/\(X\)/g, ManaCostEmoji[10]);
 }
