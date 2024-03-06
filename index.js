@@ -38,7 +38,10 @@ discord.onNewMessage(msg => {
         analytics.logQuery(match);
 
         // TODO can remove this eventually
-        if (match.brackets) bracketWarn = true;
+        if (match.brackets) {
+            analytics.logBrackets();
+            bracketWarn = true;
+        }
 
         if (match.cardName === undefined) {
             // the query didn't match an existing card name
