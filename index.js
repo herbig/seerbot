@@ -31,17 +31,9 @@ discord.onNewMessage(msg => {
         return;
     }
 
-    let bracketWarn = false;
-
     const embedPromises = queryMatcher.getMatches(msg).map(async match => {
 
         analytics.logQuery(match);
-
-        // TODO can remove this eventually
-        if (match.brackets) {
-            analytics.logBrackets();
-            bracketWarn = true;
-        }
 
         if (match.cardName === undefined) {
             // the query didn't match an existing card name
@@ -74,10 +66,6 @@ discord.onNewMessage(msg => {
             }
         }
     });
-
-    if (bracketWarn) {
-        msg.reply('Hey! Please switch to using (()), the {{}} brackets will eventually be removed for queries.  Use ((help)) to see the full set of options.');
-    }
 
     // if the only query was empty (()), this would be 0
     if (embedPromises.length > 0) {

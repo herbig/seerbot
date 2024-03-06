@@ -14,10 +14,6 @@ export class Analytics {
         this.#captureEvent('query ' + matchData.queryCode, 'log', matchData);
     }
 
-    logBrackets() {
-        this.#captureEvent('brackets', 'log');
-    }
-
     logError(message, error) {
         this.#captureEvent(message, 'error', error);
     }

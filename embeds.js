@@ -16,12 +16,6 @@ export function notInSetEmbed(match) {
         .setColor(Color.FAIL);
 }
 
-/**
- * Gets the Discord embed response for a rulings query.
- * 
- * @param {string} cardName the full text name of the card
- * @returns {Embed} a Discord embed
- */
 export function rulingsEmbed(match, card, cardRulings) {
     const slug = curiosaSlug(match.cardName);
     const embed = new EmbedBuilder()
@@ -110,7 +104,7 @@ export function defaultEmbed(match, card) {
         costEmoji(card.manaCost) + 
         thresholdText(card.threshold);
 
-    // subtypes here is only displaying if there is a single one.
+    // subtypes here is only displaying if there is a single subtype.
     // This only currently impacts Azuridge Caravan, which in the 
     // database has all available minion subtypes
     const description = 
@@ -138,7 +132,7 @@ export function getHelpMessage(serverId) {
 
     `**!** — for a larger image, ex: **${OPEN_QUERY}!death dealer${CLOSE_QUERY}**\n` +
     `**?** — for official FAQ rulings on the card, from *[curiosa.io](<https://curiosa.io/faqs>)*, ex: **${OPEN_QUERY}?enchantress${CLOSE_QUERY}**\n` +
-    (!blockPriceLookups.includes(serverId) ? `**$** — to get the *[tcgplayer.com](<https://www.tcgplayer.com/categories/trading-and-collectible-card-games/sorcery-contested-realm/price-guides>)* lowest listed price, if available, ex: **${OPEN_QUERY}$ruby core${CLOSE_QUERY}**\n\n` : '\n') +
+    `**$** — to get the *[tcgplayer.com](<https://www.tcgplayer.com/categories/trading-and-collectible-card-games/sorcery-contested-realm/price-guides>)* lowest listed price, if available, ex: **${OPEN_QUERY}$ruby core${CLOSE_QUERY}**\n\n` +
 
     `You can also place a "set code" after a *pipe* character *after* the card name to specify which set you would like, as in **${OPEN_QUERY}critical strike | abt${CLOSE_QUERY}**.\n\n` +
 
@@ -162,11 +156,6 @@ function formatUSD(amount) {
     return "$" + amount.toFixed(2).replace(/\.00$/, '');
 }
 
-/** List of Discord server ids to not allow price lookups on. */
-const blockPriceLookups = [
-    '769359301466652693', // Official Sorcery Discord
-];
-
 function imgURL(card) {
     return process.env.IMG_URL_BASE + card.id + (card.category.toUpperCase() === 'SITE' ? '_hor' : '') + '.png';
 }
@@ -188,13 +177,9 @@ const Color  = Object.freeze({
 });
 
 function accentColor(elements) {
-    if (elements.length === 0) {
-        return Color.COLORLESS;
-    } else if (elements.length === 1) {
-        return Color[elements[0].toUpperCase()];
-    } else {
-        return Color.GOLD;
-    }
+    if (elements.length === 0) return Color.COLORLESS;
+    if (elements.length === 1) return Color[elements[0].toUpperCase()];
+    return Color.GOLD;
 }
 
 const SetName  = Object.freeze({
@@ -224,7 +209,7 @@ const ManaCostEmoji = [
 
 function costEmoji(manaCost) {
     if (manaCost === '') return '';
-    if (manaCost.toUpperCase() == 'X') return ManaCostEmoji[ManaCostEmoji.length - 1];
+    if (manaCost.toUpperCase() === 'X') return ManaCostEmoji[ManaCostEmoji.length - 1];
     return ManaCostEmoji[Number(manaCost)];
 }
 

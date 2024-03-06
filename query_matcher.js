@@ -1,9 +1,9 @@
+import { CLOSE_QUERY, OPEN_QUERY } from './embeds.js';
 import { readFile } from 'fs/promises';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import Fuse from "fuse.js";
 import path from 'path';
-import { CLOSE_QUERY, OPEN_QUERY } from './embeds.js';
 
 export const QueryCode = Object.freeze({
     RULINGS: '?',
@@ -36,10 +36,8 @@ export class QueryMatcher {
      */
     getMatches(discordMsg) {
 
-        // match on the pattern ((SOME TEXT)) or {{SOME TEXT}}
-        // TODO (()) is far better as a mobile experience so eventually
-        // we'd like to get rid of {{}} altogether
-        const matches = discordMsg.content.match(/\(\((.*?)\)\)|\{\{(.*?)\}\}/g);
+        // match on the pattern ((SOME TEXT))
+        const matches = discordMsg.content.match(/\(\((.*?)\)\)/g);
 
         const cardQueries = [];
     
@@ -48,8 +46,6 @@ export class QueryMatcher {
                 let query = match
                     .replace(OPEN_QUERY, '')
                     .replace(CLOSE_QUERY, '')
-                    .replace('{{', '') // TODO remove these once folks start using (())
-                    .replace('}}', '')
                     .trim();
                 let queryCode = undefined;
                 let setCode = undefined;
@@ -70,7 +66,7 @@ export class QueryMatcher {
                 }
 
                 const cardName = this.#fuzzySearch.search(query);
-                cardQueries.push({ queryCode: queryCode, query: query, cardName: cardName, setCode: setCode, brackets: match.trim().startsWith('{{') })
+                cardQueries.push({ queryCode: queryCode, query: query, cardName: cardName, setCode: setCode })
             });
         }
 
