@@ -1,9 +1,9 @@
 import { getHelpMessage, noSuchCardEmbed, defaultEmbed, imageEmbed, notInSetEmbed, pricesEmbed, rulingsEmbed, CLOSE_QUERY, OPEN_QUERY } from './embeds.js';
 import { DiscordBot, randomizeActivity } from './discord_bot.js';
 import { QueryCode, QueryMatcher } from './query_matcher.js';
-import { FourCoresAPI } from './fourcores_api.js';
 import { CardRulings } from './card_rulings.js';
 import { Analytics } from './analytics.js';
+import { FourCoresAPI } from 'fourcores';
 import { chunkArray } from './util.js';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -12,7 +12,7 @@ const queryMatcher = new QueryMatcher('card_list.txt');
 const discord = new DiscordBot(process.env.BOT_TOKEN);
 const analytics = new Analytics();
 const cardRulings = new CardRulings(analytics);
-const api = new FourCoresAPI(analytics);
+const api = new FourCoresAPI();
 
 discord.onReady(() => {
     randomizeActivity(discord);

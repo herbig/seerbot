@@ -1,6 +1,6 @@
 import chrome from 'selenium-webdriver/chrome.js';
 import { By } from 'selenium-webdriver';
-import { cardSlug } from './util.js';
+import { curiosaSlug } from 'fourcores';
 
 export class CardRulings {
 
@@ -57,7 +57,7 @@ export class CardRulings {
                     faqData.push(question, answer);
                 }
     
-                updatedRulings.set(cardSlug(cardName), faqData);
+                updatedRulings.set(curiosaSlug(cardName), faqData);
             }
     
             this.#rulings = updatedRulings;

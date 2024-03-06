@@ -1,5 +1,5 @@
 import { Embed, EmbedBuilder } from 'discord.js';
-import { cardSlug } from './util.js';
+import { curiosaSlug } from 'fourcores';
 
 export const OPEN_QUERY = '((';
 export const CLOSE_QUERY = '))';
@@ -23,7 +23,7 @@ export function notInSetEmbed(match) {
  * @returns {Embed} a Discord embed
  */
 export function rulingsEmbed(match, card, cardRulings) {
-    const slug = cardSlug(match.cardName);
+    const slug = curiosaSlug(match.cardName);
     const embed = new EmbedBuilder()
         .setTitle(`Rulings for ${match.cardName}`)
         .setThumbnail(imgURL(card))
@@ -99,7 +99,7 @@ export function pricesEmbed(match, cards) {
 
 export function imageEmbed(match, card) {
     return new EmbedBuilder()
-        .setURL(CURIOSA_CARD_URL + cardSlug(match.cardName))
+        .setURL(CURIOSA_CARD_URL + curiosaSlug(match.cardName))
         .setColor(accentColor(card.elements))
         .setTitle(match.cardName)
         .setImage(imgURL(card));
@@ -122,7 +122,7 @@ export function defaultEmbed(match, card) {
         (card.flavorText !== '' ? '*' + card.flavorText + '*' : '');
 
     return new EmbedBuilder()
-        .setURL(CURIOSA_CARD_URL + cardSlug(match.cardName))
+        .setURL(CURIOSA_CARD_URL + curiosaSlug(match.cardName))
         .setColor(accentColor(card.elements))
         .setTitle(title)
         .setDescription(description)
