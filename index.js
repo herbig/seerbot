@@ -1,18 +1,22 @@
-import { getHelpMessage, noSuchSetEmbed, noSuchCardEmbed, defaultEmbed, imageEmbed, notInSetEmbed, pricesEmbed, rulingsEmbed, CLOSE_QUERY, OPEN_QUERY } from './embeds.js';
-import { DiscordBot, randomizeActivity } from './discord_bot.js';
+import { getQueryHelpMessage, noSuchSetEmbed, noSuchCardEmbed, defaultEmbed, imageEmbed, notInSetEmbed, pricesEmbed, rulingsEmbed, CLOSE_QUERY, OPEN_QUERY } from './embeds.js';
+import { commandHandler, COMMANDS } from './slash_commands.js';
 import { QueryCode, QueryMatcher } from './query_matcher.js';
+import { FuzzyCardSearch } from './fuzzy_search.js';
 import { CardRulings } from './card_rulings.js';
+import { randomizeActivity } from './util.js';
+import { DiscordBot } from './discord_bot.js';
 import { Analytics } from './analytics.js';
 import { FourCoresAPI } from 'fourcores';
 import { chunkArray } from './util.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const queryMatcher = new QueryMatcher('card_list.txt');
-const discord = new DiscordBot(process.env.BOT_TOKEN);
+const fuzzySearch = new FuzzyCardSearch('card_list.txt');
+const api = new FourCoresAPI();
 const analytics = new Analytics();
 const cardRulings = new CardRulings(analytics);
-const api = new FourCoresAPI();
+const discord = new DiscordBot(analytics, process.env.BOT_TOKEN, process.env.BOT_CLIENT_ID, COMMANDS, commandHandler(fuzzySearch, api, cardRulings, analytics));
+const queryMatcher = new QueryMatcher(fuzzySearch);
 
 discord.onReady(() => {
     randomizeActivity(discord);
@@ -26,7 +30,7 @@ discord.onNewMessage(msg => {
     // detect ((help)) query and respond with the help message
     // this will ignore other card queries and only respond with help
     if (msg.content.replace(/\s+/g, '').toLowerCase().includes(`${OPEN_QUERY}help${CLOSE_QUERY}`)) {
-        msg.reply(getHelpMessage(msg.guild.id));
+        msg.reply(getQueryHelpMessage());
         analytics.logHelp();
         return;
     }
@@ -37,17 +41,17 @@ discord.onNewMessage(msg => {
 
         if (match.cardName === undefined) {
             // the query didn't match an existing card name
-            return noSuchCardEmbed(match);
+            return noSuchCardEmbed(match.query);
         } else {
 
             const cards = await api.getCards(match.cardName, match.setCode);
 
             if (cards === undefined) {
                 // the set code is invalid, (TODO or the API had an error)
-                return noSuchSetEmbed(match);
+                return noSuchSetEmbed(match.setCode);
             } else if (cards === null) {
                 // the card name has no printing in the given (valid) set code
-                return notInSetEmbed(match);
+                return notInSetEmbed(match.cardName, match.setCode);
             } else {
                 // card list data was retrieved successfully
                
@@ -57,13 +61,13 @@ discord.onNewMessage(msg => {
                 // in the database, which is the first printing of the card
                 switch(match.queryCode) {
                     case QueryCode.RULINGS:
-                        return rulingsEmbed(match, cards[0], cardRulings);
+                        return rulingsEmbed(cards[0], cardRulings);
                     case QueryCode.PRICE:
-                        return pricesEmbed(match, cards); // provide the whole list
+                        return pricesEmbed(cards); // provide the whole list
                     case QueryCode.IMAGE:
-                        return imageEmbed(match, cards[0]);
+                        return imageEmbed(cards[0]);
                     default:
-                        return defaultEmbed(match, cards[0]);
+                        return defaultEmbed(cards[0]);
                 }
             }
         }

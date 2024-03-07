@@ -1,4 +1,4 @@
-import { Client, Events, GatewayIntentBits } from 'discord.js';
+import { REST, Routes, Client, Events, GatewayIntentBits } from 'discord.js';
 
 /**
  * A light wrapper that manages interactions with Discord.
@@ -7,7 +7,7 @@ export class DiscordBot {
 
     #client;
 
-    constructor(botToken) {
+    constructor(analytics, botToken, clientId, commands, commandHandler) {
         this.#client = new Client({
             intents: [
                 GatewayIntentBits.Guilds,
@@ -16,6 +16,22 @@ export class DiscordBot {
             ]
         });
         this.#client.login(botToken);
+
+        // set up slash commands
+        (async () => {
+            try {
+                // we generally don't need to register commands every time the
+                // app is started, so just using a simple env var to register once
+                // then not again
+                if (process.env.REGISTER_COMMANDS === 'true') {
+                    const rest = new REST({ version: '9' }).setToken(botToken);
+                    await rest.put(Routes.applicationCommands(clientId), { body: commands });
+                }
+                this.#client.on(Events.InteractionCreate, commandHandler);
+            } catch (error) {
+                analytics.logError('slash commands setup failed', error);
+            }
+        })();
     }
 
     onReady(callback) { this.#client.on(Events.ClientReady, callback); }
@@ -23,31 +39,4 @@ export class DiscordBot {
     onNewMessage(callback) { this.#client.on(Events.MessageCreate, callback); }
 
     setActivityStatus(activity) { this.#client.user.setActivity(activity); }
-}
-
-/**
- * Sets an interval to randomly update the Discord activity status of the bot.
- */
-export function randomizeActivity(discord) {
-
-    const activities = [
-        "for ante",
-        "Grey Wolves",
-        "Wicker Manikin",
-        "at Death's Door",
-        "Deathspeaker",
-        "four Cores",
-        "Muck Lampreys",
-        "Grapple Shot",
-    ];
-
-    function setRandom() {
-        discord.setActivityStatus(activities[Math.floor(Math.random() * activities.length)]);
-    };
-
-    setRandom();
-
-    setInterval(() => {
-        setRandom();
-    }, 600_000); // 10 minute interval
 }

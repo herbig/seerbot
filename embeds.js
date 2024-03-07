@@ -1,31 +1,37 @@
-import { Embed, EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { curiosaSlug } from 'fourcores';
 
 export const OPEN_QUERY = '((';
 export const CLOSE_QUERY = '))';
 
-export function noSuchCardEmbed(match) {
+export function generalErrorEmbed() {
     return new EmbedBuilder()
-        .setDescription(`No card found for \"${match.query}\".`)
+        .setDescription('Oops, something weird happened, please try again.')
         .setColor(Color.FAIL);
 }
 
-export function noSuchSetEmbed(match) {
+export function noSuchCardEmbed(query) {
     return new EmbedBuilder()
-        .setDescription(`\"${match.setCode}\" is not a valid set code.`)
+        .setDescription(`No card found for \"${query}\".`)
         .setColor(Color.FAIL);
 }
 
-export function notInSetEmbed(match) {
+export function noSuchSetEmbed(setCode) {
     return new EmbedBuilder()
-        .setDescription(`${match.cardName} not found in \"${SetName[match.setCode.toUpperCase()]}\".`)
+        .setDescription(`\"${setCode}\" is not a valid set code.`)
         .setColor(Color.FAIL);
 }
 
-export function rulingsEmbed(match, card, cardRulings) {
-    const slug = curiosaSlug(match.cardName);
+export function notInSetEmbed(cardName, setCode) {
+    return new EmbedBuilder()
+        .setDescription(`${cardName} not found in \"${SetName[setCode.toUpperCase()]}\".`)
+        .setColor(Color.FAIL);
+}
+
+export function rulingsEmbed(card, cardRulings) {
+    const slug = curiosaSlug(card.name);
     const embed = new EmbedBuilder()
-        .setTitle(`Rulings for ${match.cardName}`)
+        .setTitle(`Rulings for ${card.name}`)
         .setThumbnail(imgURL(card))
         .setURL(CURIOSA_CARD_URL + slug);
 
@@ -39,7 +45,7 @@ export function rulingsEmbed(match, card, cardRulings) {
         let description = '';
 
         if (faqs === undefined || faqs.length === 0) {
-            description = `No rulings available for ${match.cardName}.`;
+            description = `No rulings available for ${card.name}.`;
         } else {
             for (let i = 0; i < faqs.length; i++) {
                 if (i % 2 === 0) {
@@ -56,7 +62,7 @@ export function rulingsEmbed(match, card, cardRulings) {
     return embed;
 }
 
-export function pricesEmbed(match, cards) {
+export function pricesEmbed(cards) {
 
     var description = '';
 
@@ -83,12 +89,12 @@ export function pricesEmbed(match, cards) {
     const firstCard = cards[0];
 
     const embed = new EmbedBuilder()
-        .setTitle(`${match.cardName} Prices`)
+        .setTitle(`${firstCard.name} Prices`)
         .setThumbnail(imgURL(firstCard));
 
     if (description === '') {
         return embed
-            .setDescription(`No price info for ${match.cardName}.`)
+            .setDescription(`No price info for ${firstCard.name}.`)
             .setColor(Color.FAIL);
     } else {
         return embed
@@ -97,16 +103,16 @@ export function pricesEmbed(match, cards) {
     }
 }
 
-export function imageEmbed(match, card) {
+export function imageEmbed(card) {
     return new EmbedBuilder()
-        .setURL(CURIOSA_CARD_URL + curiosaSlug(match.cardName))
+        .setURL(CURIOSA_CARD_URL + curiosaSlug(card.name))
         .setColor(accentColor(card.elements))
-        .setTitle(match.cardName)
+        .setTitle(card.name)
         .setImage(imgURL(card));
 }
 
-export function defaultEmbed(match, card) {
-    const title = match.cardName + '  ' + 
+export function defaultEmbed(card) {
+    const title = card.name + '  ' + 
         costEmoji(card.manaCost) + 
         thresholdText(card.threshold);
 
@@ -122,14 +128,14 @@ export function defaultEmbed(match, card) {
         (card.flavorText !== '' ? '*' + card.flavorText + '*' : '');
 
     return new EmbedBuilder()
-        .setURL(CURIOSA_CARD_URL + curiosaSlug(match.cardName))
+        .setURL(CURIOSA_CARD_URL + curiosaSlug(card.name))
         .setColor(accentColor(card.elements))
         .setTitle(title)
         .setDescription(description)
         .setThumbnail(imgURL(card));
 }
 
-export function getHelpMessage(serverId) {
+export function getQueryHelpMessage() {
     return '‎\n' + // empty space to create a line break that won't be trimmed by Discord
     '**SeerBot Sorcery Card Lookup**\n\n' +
     `Place a full, partial, or misspelled card name within double parenthesis, e.g. **${OPEN_QUERY}philosopher${CLOSE_QUERY}** to get the card\'s stats and a thumbnail image. Text casing or whitespace do not matter. The default card returned is its first printing (Alpha in most cases).\n\n` +

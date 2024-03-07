@@ -14,6 +14,10 @@ export class Analytics {
         this.#captureEvent('query ' + matchData.queryCode, 'log', matchData);
     }
 
+    logCommand(commandName, data) {
+        this.#captureEvent('command ' + commandName, 'log', data);
+    }
+
     logError(message, error) {
         this.#captureEvent(message, 'error', error);
     }

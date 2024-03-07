@@ -1,9 +1,4 @@
 import { CLOSE_QUERY, OPEN_QUERY } from './embeds.js';
-import { readFile } from 'fs/promises';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import Fuse from "fuse.js";
-import path from 'path';
 
 export const QueryCode = Object.freeze({
     RULINGS: '?',
@@ -21,8 +16,8 @@ export class QueryMatcher {
 
     #fuzzySearch;
 
-    constructor(cardFile) {
-        this.#fuzzySearch = new FuzzyCardSearch(cardFile);
+    constructor(fuzzySearch) {
+        this.#fuzzySearch = fuzzySearch;
     }
 
     /**
@@ -75,29 +70,5 @@ export class QueryMatcher {
         const deduped = Array.from(new Set(cardQueries.map(obj => JSON.stringify(obj)))).map(str => JSON.parse(str));
     
         return deduped;
-    }
-}
-
-/**
- * A fuzzy search implementation, which allows users to have 
- * minor misspellings and still get a result.
- */
-class FuzzyCardSearch {
-
-    #fuse;
-
-    constructor(searchFile) {
-        this.#initialize(searchFile);
-    }
-
-    async #initialize(searchFile) {
-        const filePath = path.join(dirname(fileURLToPath(import.meta.url)), searchFile);
-        const data = await readFile(filePath, { encoding: 'utf-8' });
-        this.#fuse = new Fuse(data.split(/\r?\n/), { threshold: 0.3 });
-    }
-
-    search(searchPattern) {
-        const result = this.#fuse.search(searchPattern);
-        return result.length > 0 ? result[0].item : undefined;
     }
 }
