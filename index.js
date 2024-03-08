@@ -44,7 +44,7 @@ discord.onNewMessage(msg => {
             return noSuchCardEmbed(match.query);
         } else {
 
-            const cards = await api.getCards(match.cardName, match.setCode);
+            const cards = await api.getCards(match.cardName, match.setCode, match.queryCode === QueryCode.PRICE);
 
             if (cards === undefined) {
                 // the set code is invalid, (TODO or the API had an error)

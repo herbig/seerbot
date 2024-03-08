@@ -66,7 +66,7 @@ export function commandHandler(fuzzySearch, api, cardRulings, analytics) {
         if (cardName === undefined) {
             embed = noSuchCardEmbed(query);
         } else {
-            const cards = await api.getCards(cardName);
+            const cards = await api.getCards(cardName, undefined, commandName === Command.PRICE);
 
             if (!cards) {
                 // unknown api error
