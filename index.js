@@ -22,10 +22,21 @@ discord.onReady(() => {
     randomizeActivity(discord);
 });
 
+// a map of server ids to their allowed SeerBot channel ids
+// TODO this is a quick hack to support requested whitelisting,
+// it would be great to have this admin configurable
+const serverRestrictions = {
+    // Team Covenant https://discord.gg/MfP4zqb6kR
+    "727928658190401636": ["953350545597403226"],
+};
+
 discord.onNewMessage(msg => {
 
     // if it's a bot message, don't do anything
     if (msg.author.bot) return;
+
+    // check for any channel restrictions
+    if (serverRestrictions[msg.guild.id] !== undefined && !serverRestrictions[msg.guild.id].includes(msg.channel.id)) return;
 
     // detect ((help)) query and respond with the help message
     // this will ignore other card queries and only respond with help
