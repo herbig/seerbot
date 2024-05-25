@@ -157,7 +157,7 @@ export function getQueryHelpMessage() {
     '**ABT** — Alpha Box Topper\n' +
     '**BBT** — Beta Box Topper\n' +
     '**P22** — 2022 Promo\n' +
-    '**P23** — 2023 Promo\n\n' +
+    '**P23** — 2023 Promo\n' +
     '**D24** — 2024 Dust Store Promo\n\n' +
 
     `Please ping <@${process.env.DEV_DISCORD_ID}> with any feedback or issues!`
