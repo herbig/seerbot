@@ -158,6 +158,7 @@ export function getQueryHelpMessage() {
     '**BBT** — Beta Box Topper\n' +
     '**P22** — 2022 Promo\n' +
     '**P23** — 2023 Promo\n' +
+    '**P24** — 2024 Promo\n' +
     '**D24** — 2024 Dust Store Promo\n\n' +
 
     `Please ping <@${process.env.DEV_DISCORD_ID}> with any feedback or issues!`
@@ -204,6 +205,7 @@ const SetName  = Object.freeze({
     BET: 'Beta',
     BBT: 'Beta Box Topper',
     P23: '2023 Promo',
+    P24: '2024 Promo',
     D24: '2024 Dust Store Promo',
 });
 
