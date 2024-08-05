@@ -1,17 +1,13 @@
 # SeerBot
 A Discord bot inspired by [MTG Scryfall](https://scryfall.com/docs/discord-bot), to quickly get [Sorcery TCG](https://sorcerytcg.com/) card details in Discord.
 
-The bot scans new messages for the pattern `((CARD NAME))` and responds with details about the card, if the name is a valid Sorcery card.
+The bot scans new messages for the pattern `((CARD NAME))` and responds with details about the card, if the text is a valid Sorcery card name.
 
-For local dev, to get set up run:
-
-`npm install`
-
-Then
+For local dev run:
 
 `npm run devStart`
 
-You will need to have set up a Discord bot in their developer portal with the *Message Content Intent* permission, as well as the following values in your local `.env` file:
+You will need to have set up a Discord bot in the Discord developer portal with the *Message Content Intent* permission, as well as the following values in your local `.env` file:
 
 ```
 # Sentry DSN, for analytics
@@ -31,4 +27,4 @@ REGISTER_COMMANDS=true
 ```
 
 # Emoji
-Mana and threshold emoji are provided under `resources/emoji`, and `resources/emoji_adjusted`, the adjusted version having bottom padding to properly baseline align them within a Discord embed.  These are already hosted, and should appear.  To host them yourself, add them to your Discord server and update the `ElementEmoji` and `ManaCostEmoji` fields with their ids.
+Mana and threshold emoji are provided under `resources/emoji`, and `resources/emoji_adjusted`, the adjusted version having bottom padding to properly baseline align them within a Discord embed.  These are already hosted on the FourCores Discord, and should appear.  To host them yourself, add them to your Discord server and update the `ElementEmoji` and `ManaCostEmoji` fields with their ids.

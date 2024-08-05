@@ -5,7 +5,7 @@ import { FuzzyCardSearch } from './fuzzy_search.js';
 import { randomizeActivity } from './util.js';
 import { DiscordBot } from './discord_bot.js';
 import { Analytics } from './analytics.js';
-import { FourCoresAPI } from './FourCoresAPI.js';
+import { FourCoresAPI } from './four_cores_api.js';
 import { chunkArray } from './util.js';
 import dotenv from 'dotenv';
 dotenv.config();
