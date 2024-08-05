@@ -4,13 +4,14 @@ import { LRUCache } from 'lru-cache';
  * Handles REST requests to the fourcores.xyz API.
  */
 export class FourCoresAPI {
-    constructor() {
+    constructor(analytics) {
         this.API = 'https://fourcores.xyz/api';
         this.cache = new LRUCache({
             max: 100,
             // 3 hour cache time, since price could change
             ttl: 1000 * 60 * 180,
         });
+        this.analytics = analytics;
     }
 
     async getMetadata() {
@@ -52,6 +53,7 @@ export class FourCoresAPI {
                 return null;
             }
         } catch (error) {
+            this.analytics.logError('API error', error);
             return undefined;
         }
     }

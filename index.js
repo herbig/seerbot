@@ -10,10 +10,10 @@ import { chunkArray } from './util.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const api = new FourCoresAPI();
+const analytics = new Analytics();
+const api = new FourCoresAPI(analytics);
 const allCards = await api.getAllCards()
 const fuzzySearch = new FuzzyCardSearch(allCards.map(card => card.name));
-const analytics = new Analytics();
 const discord = new DiscordBot(analytics, process.env.BOT_TOKEN, process.env.BOT_CLIENT_ID, COMMANDS, commandHandler(fuzzySearch, api, analytics));
 const queryMatcher = new QueryMatcher(fuzzySearch);
 
