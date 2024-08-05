@@ -28,36 +28,27 @@ export function notInSetEmbed(cardName, setCode) {
         .setColor(Color.FAIL);
 }
 
-export function rulingsEmbed(card, cardRulings) {
+export async function rulingsEmbed(card, api) {
     const slug = curiosaSlug(card.name);
     const embed = new EmbedBuilder()
         .setTitle(`Rulings for ${card.name}`)
         .setThumbnail(imgURL(card))
         .setURL(CURIOSA_CARD_URL + slug);
 
-    // if the FAQ scraping breaks, tell them to give me a heads up 
-    if (!cardRulings.isInitialized()) {
-        embed.setDescription(`Oops, something\'s up with rulings. Please ping <@${process.env.DEV_DISCORD_ID}> to fix it.`)
-            .setColor(Color.FAIL);
-    } else {
-        
-        const faqs = cardRulings.getRulings(slug);
-        let description = '';
+    const rulings = await api.getRulings(slug)
+    let description = '';
 
-        if (faqs === undefined || faqs.length === 0) {
-            description = `No rulings available for ${card.name}.`;
-        } else {
-            for (let i = 0; i < faqs.length; i++) {
-                if (i % 2 === 0) {
-                    description += '**' + faqs[i] + '**\n';
-                } else {
-                    description += faqs[i] + '\n\n';
-                }
-            }
+    if (rulings === null || rulings.length === 0) {
+        description = `No rulings available for ${card.name}.`;
+    } else {
+        for (let i = 0; i < rulings.length; i++) {
+            var ruling = rulings[i];
+            description += '**' + ruling.question + '**\n';
+            description += ruling.answer + '\n\n';
         }
-        embed.setDescription(description)
-            .setColor(accentColor(card.elements));
     }
+    embed.setDescription(description)
+        .setColor(accentColor(card.elements));
 
     return embed;
 }

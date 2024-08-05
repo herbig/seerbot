@@ -44,7 +44,7 @@ export const COMMANDS = [
     },
 ];
 
-export function commandHandler(fuzzySearch, api, cardRulings, analytics) {
+export function commandHandler(fuzzySearch, api, analytics) {
     return async interaction => {
         if (!interaction.isCommand()) return;
 
@@ -75,7 +75,7 @@ export function commandHandler(fuzzySearch, api, cardRulings, analytics) {
             } else {
                 switch(commandName) {
                     case Command.FAQ:
-                        embed = rulingsEmbed(cards[0], cardRulings);
+                        embed = await rulingsEmbed(cards[0], api);
                         break;
                     case Command.PRICE:
                         embed = pricesEmbed(cards);

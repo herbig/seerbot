@@ -2,7 +2,6 @@ import { getQueryHelpMessage, noSuchSetEmbed, noSuchCardEmbed, defaultEmbed, ima
 import { commandHandler, COMMANDS } from './slash_commands.js';
 import { QueryCode, QueryMatcher } from './query_matcher.js';
 import { FuzzyCardSearch } from './fuzzy_search.js';
-import { CardRulings } from './card_rulings.js';
 import { randomizeActivity } from './util.js';
 import { DiscordBot } from './discord_bot.js';
 import { Analytics } from './analytics.js';
@@ -15,8 +14,7 @@ const api = new FourCoresAPI();
 const allCards = await api.getAllCards()
 const fuzzySearch = new FuzzyCardSearch(allCards.map(card => card.name));
 const analytics = new Analytics();
-const cardRulings = new CardRulings(analytics);
-const discord = new DiscordBot(analytics, process.env.BOT_TOKEN, process.env.BOT_CLIENT_ID, COMMANDS, commandHandler(fuzzySearch, api, cardRulings, analytics));
+const discord = new DiscordBot(analytics, process.env.BOT_TOKEN, process.env.BOT_CLIENT_ID, COMMANDS, commandHandler(fuzzySearch, api, analytics));
 const queryMatcher = new QueryMatcher(fuzzySearch);
 
 discord.onReady(() => {
@@ -73,7 +71,7 @@ discord.onNewMessage(async msg => {
                 // in the database, which is the first printing of the card
                 switch(match.queryCode) {
                     case QueryCode.RULINGS:
-                        return rulingsEmbed(cards[0], cardRulings);
+                        return await rulingsEmbed(cards[0], api);
                     case QueryCode.PRICE:
                         return pricesEmbed(cards); // provide the whole list
                     case QueryCode.IMAGE:
