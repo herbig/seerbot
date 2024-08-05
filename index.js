@@ -6,13 +6,14 @@ import { CardRulings } from './card_rulings.js';
 import { randomizeActivity } from './util.js';
 import { DiscordBot } from './discord_bot.js';
 import { Analytics } from './analytics.js';
-import { FourCoresAPI } from 'fourcores';
+import { FourCoresAPI } from './FourCoresAPI.js';
 import { chunkArray } from './util.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const fuzzySearch = new FuzzyCardSearch('card_list.txt');
 const api = new FourCoresAPI();
+const allCards = await api.getAllCards()
+const fuzzySearch = new FuzzyCardSearch(allCards.map(card => card.name));
 const analytics = new Analytics();
 const cardRulings = new CardRulings(analytics);
 const discord = new DiscordBot(analytics, process.env.BOT_TOKEN, process.env.BOT_CLIENT_ID, COMMANDS, commandHandler(fuzzySearch, api, cardRulings, analytics));
@@ -30,7 +31,7 @@ const serverRestrictions = {
     "727928658190401636": ["953350545597403226"],
 };
 
-discord.onNewMessage(msg => {
+discord.onNewMessage(async msg => {
 
     // if it's a bot message, don't do anything
     if (msg.author.bot) return;
@@ -41,7 +42,7 @@ discord.onNewMessage(msg => {
     // detect ((help)) query and respond with the help message
     // this will ignore other card queries and only respond with help
     if (msg.content.replace(/\s+/g, '').toLowerCase().includes(`${OPEN_QUERY}help${CLOSE_QUERY}`)) {
-        msg.reply(getQueryHelpMessage());
+        msg.reply(await getQueryHelpMessage(api));
         analytics.logHelp();
         return;
     }

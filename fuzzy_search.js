@@ -1,8 +1,4 @@
-import { readFile } from 'fs/promises';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 import Fuse from "fuse.js";
-import path from 'path';
 
 /**
  * A fuzzy search implementation, which allows users to have 
@@ -12,14 +8,8 @@ export class FuzzyCardSearch {
 
     #fuse;
 
-    constructor(searchFile) {
-        this.#initialize(searchFile);
-    }
-
-    async #initialize(searchFile) {
-        const filePath = path.join(dirname(fileURLToPath(import.meta.url)), searchFile);
-        const data = await readFile(filePath, { encoding: 'utf-8' });
-        this.#fuse = new Fuse(data.split(/\r?\n/), { threshold: 0.3 });
+    constructor(cardNameList) {
+        this.#fuse = new Fuse(cardNameList, { threshold: 0.3 });
     }
 
     search(searchPattern) {

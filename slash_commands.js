@@ -55,7 +55,7 @@ export function commandHandler(fuzzySearch, api, cardRulings, analytics) {
         analytics.logCommand(commandName, { query: query, ephemeral: isPublicMessage });
 
         if (commandName === Command.HELP) {
-            interaction.reply({ content: getQueryHelpMessage(), ephemeral: isPublicMessage });
+            interaction.reply({ content: await getQueryHelpMessage(api), ephemeral: isPublicMessage });
             return;
         }
 

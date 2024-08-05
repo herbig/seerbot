@@ -32,11 +32,3 @@ REGISTER_COMMANDS=true
 
 # Emoji
 Mana and threshold emoji are provided under `resources/emoji`, and `resources/emoji_adjusted`, the adjusted version having bottom padding to properly baseline align them within a Discord embed.  These are already hosted, and should appear.  To host them yourself, add them to your Discord server and update the `ElementEmoji` and `ManaCostEmoji` fields with their ids.
-
-# Adding new cards
-When new sets are printed, the following steps will need to be taken:
-
-- update the backing API with the cards and their data
-- update `card_list.txt` with any new card names
-- add the card images to id based S3 bucket (or whatever image hosting is used), with a `{id}_hor` (horizontal) postfix for Site cards.
-- update `getQueryHelpMessage` and `SetName` with the new set code

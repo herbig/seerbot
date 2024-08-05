@@ -33,3 +33,13 @@ export function randomizeActivity(discord) {
         setRandom();
     }, 600_000); // 10 minute interval
 }
+
+/**
+ * Normalize a given string to the same identifier format that curiosa.io uses.
+ */
+export function curiosaSlug(name) {
+    return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove accents, such as Ä
+        .toLowerCase()                                           // lowercase it
+        .replace(/[\s\-]+/g, '_')                                // Replace spaces or dashes with underscores
+        .replace(/[^a-zA-Z_]/g, '');                             // Remove non-alphabetic characters (except for underscores)
+}

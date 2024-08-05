@@ -1,6 +1,6 @@
 import chrome from 'selenium-webdriver/chrome.js';
 import { By } from 'selenium-webdriver';
-import { curiosaSlug } from 'fourcores';
+import { curiosaSlug } from './util.js';
 
 export class CardRulings {
 

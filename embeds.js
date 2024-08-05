@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js';
-import { curiosaSlug } from 'fourcores';
+import { curiosaSlug } from './util.js';
 
 export const OPEN_QUERY = '((';
 export const CLOSE_QUERY = '))';
@@ -135,35 +135,32 @@ export function defaultEmbed(card) {
         .setThumbnail(imgURL(card));
 }
 
-export function getQueryHelpMessage() {
+export async function getQueryHelpMessage(api) {
+
+    const metadata = await api.getMetadata();
+    const sets = metadata.sets;
+
+    const setsList = Object.values(sets)
+        .map(set => `**${set.setCode}** — ${set.displayName}`)
+        .join('\n');
+
     return '‎\n' + // empty space to create a line break that won't be trimmed by Discord
-    '**SeerBot Sorcery Card Lookup**\n\n' +
-    `Place a full, partial, or misspelled card name within double parenthesis, e.g. **${OPEN_QUERY}philosopher${CLOSE_QUERY}** to get the card\'s stats and a thumbnail image. Text casing or whitespace do not matter. The default card returned is its first printing (Alpha in most cases).\n\n` +
+        '**SeerBot Sorcery Card Lookup**\n\n' +
+        `Place a full, partial, or misspelled card name within double parenthesis, e.g. **${OPEN_QUERY}philosopher${CLOSE_QUERY}** to get the card's stats and a thumbnail image. Text casing or whitespace do not matter. The default card returned is its first printing (Alpha in most cases).\n\n` +
 
-    'The following  commands can also be placed within the parenthesis *before* the card name:\n\n' +
+        'The following commands can also be placed within the parenthesis *before* the card name:\n\n' +
 
-    `**!** — for a larger image, ex: **${OPEN_QUERY}!death dealer${CLOSE_QUERY}**\n` +
-    `**?** — for official FAQ rulings on the card, from *[curiosa.io](<https://curiosa.io/faqs>)*, ex: **${OPEN_QUERY}?enchantress${CLOSE_QUERY}**\n` +
-    `**$** — to get the *[tcgplayer.com](<https://www.tcgplayer.com/categories/trading-and-collectible-card-games/sorcery-contested-realm/price-guides>)* lowest listed price, if available, ex: **${OPEN_QUERY}$ruby core${CLOSE_QUERY}**\n\n` +
+        `**!** — for a larger image, ex: **${OPEN_QUERY}!death dealer${CLOSE_QUERY}**\n` +
+        `**?** — for official FAQ rulings on the card, from *[curiosa.io](<https://curiosa.io/faqs>)*, ex: **${OPEN_QUERY}?enchantress${CLOSE_QUERY}**\n` +
+        `**$** — to get the *[tcgplayer.com](<https://www.tcgplayer.com/categories/trading-and-collectible-card-games/sorcery-contested-realm/price-guides>)* lowest listed price, if available, ex: **${OPEN_QUERY}$ruby core${CLOSE_QUERY}**\n\n` +
 
-    `You can also place a "set code" after a *pipe* character *after* the card name to specify which set you would like, as in **${OPEN_QUERY}critical strike | abt${CLOSE_QUERY}**.\n\n` +
+        `You can also place a "set code" after a *pipe* character *after* the card name to specify which set you would like, as in **${OPEN_QUERY}critical strike | abt${CLOSE_QUERY}**.\n\n` +
 
-    'The current set codes are:\n\n' +
+        'The current set codes are:\n\n' +
 
-    '**ALP** — Alpha\n' +
-    '**BET** — Beta\n' +
-    '**APC** — Alpha Preconstructed Deck\n' +
-    '**APP** — Alpha Pledge Pack\n' +
-    '**ABT** — Alpha Box Topper\n' +
-    '**BBT** — Beta Box Topper\n' +
-    '**P22** — 2022 Promo\n' +
-    '**P23** — 2023 Promo\n' +
-    '**P24** — 2024 Promo\n' +
-    '**D24** — 2024 Dust Store Promo\n' +
-    '**SDK** — Store Draft Kit\n' +
-    '**ALE** — Arthurian Legends\n\n' +
+        setsList + '\n\n' +
 
-    `Please ping <@${process.env.DEV_DISCORD_ID}> with any feedback or issues!`
+        `Please ping <@${process.env.DEV_DISCORD_ID}> with any feedback or issues!`;
 }
 
 const CURIOSA_CARD_URL = 'https://curiosa.io/cards/';
