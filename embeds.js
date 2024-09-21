@@ -29,13 +29,12 @@ export function notInSetEmbed(cardName, setCode) {
 }
 
 export async function rulingsEmbed(card, api) {
-    const slug = curiosaSlug(card.name);
     const embed = new EmbedBuilder()
         .setTitle(`Rulings for ${card.name}`)
         .setThumbnail(imgURL(card))
-        .setURL(CURIOSA_CARD_URL + slug);
+        .setURL(FC_CARD_URL + encodeURIComponent(card.name));
 
-    const rulings = await api.getRulings(slug)
+    const rulings = await api.getRulings(curiosaSlug(card.name))
     let description = '';
 
     if (rulings === null || rulings.length === 0) {
@@ -96,7 +95,7 @@ export function pricesEmbed(cards) {
 
 export function imageEmbed(card) {
     return new EmbedBuilder()
-        .setURL(CURIOSA_CARD_URL + curiosaSlug(card.name))
+        .setURL(FC_CARD_URL + encodeURIComponent(card.name))
         .setColor(accentColor(card.elements))
         .setTitle(card.name)
         .setImage(imgURL(card));
@@ -119,7 +118,7 @@ export function defaultEmbed(card) {
         (card.flavorText !== '' ? '*' + card.flavorText + '*' : '');
 
     return new EmbedBuilder()
-        .setURL(CURIOSA_CARD_URL + curiosaSlug(card.name))
+        .setURL(FC_CARD_URL + encodeURIComponent(card.name))
         .setColor(accentColor(card.elements))
         .setTitle(title)
         .setDescription(description)
@@ -154,7 +153,7 @@ export async function getQueryHelpMessage(api) {
         `Please ping <@${process.env.DEV_DISCORD_ID}> with any feedback or issues!`;
 }
 
-const CURIOSA_CARD_URL = 'https://curiosa.io/cards/';
+const FC_CARD_URL = 'https://fourcores.xyz/card/';
 
 function formatUSD(amount) {
     return "$" + amount.toFixed(2).replace(/\.00$/, '');
