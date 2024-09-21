@@ -136,6 +136,9 @@ export async function getQueryHelpMessage(api) {
 
     return '‎\n' + // empty space to create a line break that won't be trimmed by Discord
         '**Four Cores Sorcery Card Lookup**\n\n' +
+
+        'Check out the [mobile app](<https://fourcores.xyz/install>) for more helpful tools!\n\n' +
+
         `Place a full, partial, or misspelled card name within double parenthesis, e.g. **${OPEN_QUERY}philosopher${CLOSE_QUERY}** to get the card's stats and a thumbnail image. Text casing or whitespace do not matter. The default card returned is its first printing (Alpha in most cases).\n\n` +
 
         'The following commands can also be placed within the parenthesis *before* the card name:\n\n' +
