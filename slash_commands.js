@@ -20,7 +20,7 @@ const Command = Object.freeze({
 export const COMMANDS = [
     {
         name: Command.HELP,
-        description: 'Replies with a description of SeerBot features.',
+        description: 'Replies with a description of Four Cores bot features.',
     },
     {
         name: Command.INFO,

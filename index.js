@@ -21,7 +21,7 @@ discord.onReady(() => {
     randomizeActivity(discord);
 });
 
-// a map of server ids to their allowed SeerBot channel ids
+// a map of server ids to their allowed Four Cores bot channel ids
 // TODO this is a quick hack to support requested whitelisting,
 // it would be great to have this admin configurable
 const serverRestrictions = {

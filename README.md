@@ -1,4 +1,4 @@
-# SeerBot
+# Four Cores Discord Bot
 A Discord bot inspired by [MTG Scryfall](https://scryfall.com/docs/discord-bot), to quickly get [Sorcery TCG](https://sorcerytcg.com/) card details in Discord.
 
 The bot scans new messages for the pattern `((CARD NAME))` and responds with details about the card, if the text is a valid Sorcery card name.
