@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js';
-import { curiosaSlug } from './util.js';
+import { curiosaSlug, displayPower } from './util.js';
 
 export const OPEN_QUERY = '((';
 export const CLOSE_QUERY = '))';
@@ -106,6 +106,8 @@ export function defaultEmbed(card) {
         costEmoji(card.manaCost) + 
         thresholdText(card.threshold);
 
+    const displayPower = displayPower(card)
+
     // subtypes here is only displaying if there is a single subtype.
     // This only currently impacts Azuridge Caravan, which in the 
     // database has all available minion subtypes
@@ -113,7 +115,7 @@ export function defaultEmbed(card) {
         '**' + startCase(card.rarity) + ' — ' + startCase(card.category) + 
             (card.types.length > 0 ? ' — ' + card.types.map(s => startCase(s)).join(' ') : '') + 
             (card.subtypes.length === 1 ? ' — ' + startCase(card.subtypes[0]) : '') + '**\n' +
-        (card.power ? 'Power ' + card.power + '\n' : '') +
+        (displayPower ? 'Power ' + displayPower + '\n' : '') +
         replaceManaSymbols(card.rulesText) +  '\n' +
         (card.flavorText !== '' ? '*' + card.flavorText + '*' : '');
 

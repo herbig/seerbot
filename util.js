@@ -43,3 +43,14 @@ export function curiosaSlug(name) {
         .replace(/[\s\-]+/g, '_')                                // Replace spaces or dashes with underscores
         .replace(/[^a-zA-Z_]/g, '');                             // Remove non-alphabetic characters (except for underscores)
 }
+
+export function displayPower(card) {
+    const attack = card?.attack ?? undefined;
+    const defense = card?.defense ?? undefined;
+
+    if (attack != null && defense != null) {
+        return attack === defense || card.category.toUpperCase() === 'AVATAR' ? `${attack}` : `${attack}/${defense}`;
+    }
+    
+    return undefined;
+}
