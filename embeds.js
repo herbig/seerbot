@@ -106,7 +106,7 @@ export function defaultEmbed(card) {
         costEmoji(card.manaCost) + 
         thresholdText(card.threshold);
 
-    const displayPower = displayPower(card)
+    const power = displayPower(card)
 
     // subtypes here is only displaying if there is a single subtype.
     // This only currently impacts Azuridge Caravan, which in the 
@@ -115,7 +115,7 @@ export function defaultEmbed(card) {
         '**' + startCase(card.rarity) + ' — ' + startCase(card.category) + 
             (card.types.length > 0 ? ' — ' + card.types.map(s => startCase(s)).join(' ') : '') + 
             (card.subtypes.length === 1 ? ' — ' + startCase(card.subtypes[0]) : '') + '**\n' +
-        (displayPower ? 'Power ' + displayPower + '\n' : '') +
+        (power ? 'Power ' + power + '\n' : '') +
         replaceManaSymbols(card.rulesText) +  '\n' +
         (card.flavorText !== '' ? '*' + card.flavorText + '*' : '');
 
