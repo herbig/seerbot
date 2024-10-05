@@ -16,8 +16,6 @@ SENTRY_DSN={Sentry DSN}
 BOT_TOKEN={Discord bot token}
 # your Discord bot's id
 BOT_CLIENT_ID={Discord bot id}
-# base URL for hosted card images
-IMG_URL_BASE='https://fourcores-images.netlify.app/.netlify/images?url=/cards/'
 # prevent analytics from firing in dev
 NODE_ENV='dev'
 # Discord id of the app's maintainer (me)

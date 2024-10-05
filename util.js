@@ -41,7 +41,7 @@ export function curiosaSlug(name) {
     return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove accents, such as Ä
         .toLowerCase()                                           // lowercase it
         .replace(/[\s\-]+/g, '_')                                // Replace spaces or dashes with underscores
-        .replace(/[^a-zA-Z_]/g, '');                             // Remove non-alphabetic characters (except for underscores)
+        .replace(/[^a-zA-Z0-9_]/g, '');                          // Remove non-alphabetic characters (except for underscores or numbers)
 }
 
 export function displayPower(card) {

@@ -165,7 +165,7 @@ function formatUSD(amount) {
 }
 
 function imgURL(card) {
-    return process.env.IMG_URL_BASE + card.id + (card.category.toUpperCase() === 'SITE' ? '_hor' : '') + '.png';
+    return `https://fourcores-images.netlify.app/.netlify/images?url=/cards/${card.id}${card.category.toUpperCase() === 'SITE' ? '_hor' : ''}.png&fm=webp&w=300`
 }
 
 function startCase(input) {
