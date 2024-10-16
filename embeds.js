@@ -165,7 +165,8 @@ function formatUSD(amount) {
 }
 
 function imgURL(card) {
-    return `https://fourcores-images.netlify.app/.netlify/images?url=/cards/${card.id}${card.category.toUpperCase() === 'SITE' ? '_hor' : ''}.png&fm=webp&w=300`
+    // return `https://fourcores-home.netlify.app/.netlify/images?url=/images/cards/${card.id}${card.category.toUpperCase() === 'SITE' ? '_hor' : ''}.png&fm=webp`
+    return `https://fourcores-home.netlify.app/images/cards/${card.id}${card.category.toUpperCase() === 'SITE' ? '_hor' : ''}.png`
 }
 
 function startCase(input) {
