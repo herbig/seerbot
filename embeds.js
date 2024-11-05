@@ -116,7 +116,7 @@ export function defaultEmbed(card) {
             (card.types.length > 0 ? ' — ' + card.types.map(s => startCase(s)).join(' ') : '') + 
             (card.subtypes.length === 1 ? ' — ' + startCase(card.subtypes[0]) : '') + '**\n' +
         (power ? 'Power ' + power + '\n' : '') +
-        replaceManaSymbols(card.rulesText) +  '\n' +
+        replaceManaSymbols(card.rulesText).replaceAll("$", "") +  '\n' +
         (card.flavorText !== '' ? '*' + card.flavorText + '*' : '');
 
     return new EmbedBuilder()
