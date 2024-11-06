@@ -76,7 +76,7 @@ export function pricesEmbed(cards) {
         description = description + cardPrice;
     }
 
-    const firstCard = cards[0];
+    const firstCard = cards.find(card => card.isFirstPrinting) || cards[0];
 
     const embed = new EmbedBuilder()
         .setTitle(`${firstCard.name} Prices`)
