@@ -3,7 +3,7 @@ A Discord bot inspired by [MTG Scryfall](https://scryfall.com/docs/discord-bot),
 
 The bot scans new messages for the pattern `((CARD NAME))` and responds with details about the card, if the text is a valid Sorcery card name.
 
-To add the bot to a discord server you administer use [this join link](https://discord.com/api/oauth2/authorize?client_id=1205311766280544346&permissions=3072&scope=bot)
+To add the bot to a discord server you administer use [this join link](https://fourcores.xyz/bot)
 
 ## Dev setup
 For local dev run:
