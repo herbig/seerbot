@@ -3,6 +3,9 @@ A Discord bot inspired by [MTG Scryfall](https://scryfall.com/docs/discord-bot),
 
 The bot scans new messages for the pattern `((CARD NAME))` and responds with details about the card, if the text is a valid Sorcery card name.
 
+To add the bot to a discord server you administer use [this join link](https://discord.com/api/oauth2/authorize?client_id=1205311766280544346&permissions=3072&scope=bot)
+
+## Dev setup
 For local dev run:
 
 `npm run devStart`
@@ -24,5 +27,5 @@ DEV_DISCORD_ID={discord id}
 REGISTER_COMMANDS=true
 ```
 
-# Emoji
+## Emoji
 Mana and threshold emoji are provided under `resources/emoji`, and `resources/emoji_adjusted`, the adjusted version having bottom padding to properly baseline align them within a Discord embed.  These are already hosted on the FourCores Discord, and should appear.  To host them yourself, add them to your Discord server and update the `ElementEmoji` and `ManaCostEmoji` fields with their ids.
