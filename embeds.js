@@ -62,7 +62,7 @@ export function pricesEmbed(cards) {
 
         for (const finish of card.finishes) {
             if (finish.tcgPlayerId !== null) {
-                const url = `https://www.tcgplayer.com/product/${finish.tcgPlayerId}`;
+                const url = 'https://tcgplayer.pxf.io/fourcores?u=' + encodeURIComponent(`https://www.tcgplayer.com/product/${finish.tcgPlayerId}`)
                 const price = finish.lowPriceUSD === null ? 'None listed' : formatUSD(finish.lowPriceUSD);
                 cardPrice = cardPrice + 
                     '**[' + startCase(finish.type) + `](${url})** — ` + price + '\n';
@@ -165,7 +165,6 @@ function formatUSD(amount) {
 }
 
 function imgURL(card) {
-    // return `https://fourcores-home.netlify.app/.netlify/images?url=/images/cards/${card.id}${card.category.toUpperCase() === 'SITE' ? '_hor' : ''}.png&fm=webp`
     return `https://fourcores-home.netlify.app/images/cards/${card.id}${card.category.toUpperCase() === 'SITE' ? '_hor' : ''}.png`
 }
 
