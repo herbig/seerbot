@@ -2,7 +2,6 @@ import { getQueryHelpMessage, noSuchSetEmbed, noSuchCardEmbed, defaultEmbed, ima
 import { commandHandler, COMMANDS } from './slash_commands.js';
 import { QueryCode, QueryMatcher } from './query_matcher.js';
 import { FuzzyCardSearch } from './fuzzy_search.js';
-import { randomizeActivity } from './util.js';
 import { DiscordBot } from './discord_bot.js';
 import { Analytics } from './analytics.js';
 import { FourCoresAPI } from './four_cores_api.js';
