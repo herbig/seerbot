@@ -17,25 +17,10 @@ const fuzzySearch = new FuzzyCardSearch(allCards.map(card => card.name));
 const discord = new DiscordBot(analytics, process.env.BOT_TOKEN, process.env.BOT_CLIENT_ID, COMMANDS, commandHandler(fuzzySearch, api, analytics));
 const queryMatcher = new QueryMatcher(fuzzySearch);
 
-discord.onReady(() => {
-    randomizeActivity(discord);
-});
-
-// a map of server ids to their allowed Four Cores bot channel ids
-// TODO this is a quick hack to support requested whitelisting,
-// it would be great to have this admin configurable
-const serverRestrictions = {
-    // Team Covenant https://discord.gg/MfP4zqb6kR
-    "727928658190401636": ["953350545597403226"],
-};
-
 discord.onNewMessage(async msg => {
 
     // if it's a bot message, don't do anything
     if (msg.author.bot) return;
-
-    // check for any channel restrictions
-    if (serverRestrictions[msg.guild.id] !== undefined && !serverRestrictions[msg.guild.id].includes(msg.channel.id)) return;
 
     // detect ((help)) query and respond with the help message
     // this will ignore other card queries and only respond with help
