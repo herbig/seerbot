@@ -43,7 +43,7 @@ export async function rulingsEmbed(card, api) {
         for (let i = 0; i < rulings.length; i++) {
             var ruling = rulings[i];
             description += '**' + ruling.question + '**\n';
-            description += ruling.answer + '\n\n';
+            description += stripHtml(ruling.answer) + '\n\n';
         }
     }
     embed.setDescription(description)
@@ -220,6 +220,7 @@ const ManaCostEmoji = [
     '<:m_07:1215045329645215855>',
     '<:m_08:1215045301702893568>',
     '<:m_09:1215045274100170772>',
+    '<:m_10:1448230265942970398>',
     '<:m_X:1215045244853166080>',
 ];
 
@@ -259,5 +260,25 @@ function replaceManaSymbols(inputString) {
         .replace(/\(7\)/g, ManaCostEmoji[7])
         .replace(/\(8\)/g, ManaCostEmoji[8])
         .replace(/\(9\)/g, ManaCostEmoji[9])
-        .replace(/\(X\)/g, ManaCostEmoji[10]);
+        .replace(/\(9\)/g, ManaCostEmoji[10])
+        .replace(/\(X\)/g, ManaCostEmoji[11]);
+}
+
+function stripHtml(html) {
+  if (!html) return ''
+  return html
+    .replace(/<(br|BR)\s*\/?>/g, '\n')
+    .replace(/<\/p>/gi, '\n')
+    .replace(/<\/div>/gi, '\n')
+    .replace(/<\/?[^>]+(>|$)/g, '')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/\r/g, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .replace(/[ \t]{2,}/g, ' ')
+    .trim()
 }
