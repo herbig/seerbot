@@ -6,6 +6,8 @@ import { LRUCache } from 'lru-cache';
 export class FourCoresAPI {
     constructor(analytics) {
         this.API = 'https://fourcores.xyz/api';
+        // Identifies seerbot in the API's request logs, distinct from browser/other traffic.
+        this.userAgent = 'seerbot/1.2.0 (+https://fourcores.xyz)';
         this.cache = new LRUCache({
             max: 100,
             // 3 hour cache time, since price could change
@@ -40,7 +42,9 @@ export class FourCoresAPI {
         }
 
         try {
-            const response = await fetch(url);
+            const response = await fetch(url, {
+                headers: { 'User-Agent': this.userAgent }
+            });
 
             if (!response.ok) return undefined;
 
