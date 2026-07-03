@@ -203,6 +203,7 @@ const SetName  = Object.freeze({
     D24: '2024 Dust Store Promo',
     P25: '2025 Promo',
     D25: '2025 Dust Store Promo',
+    D26: '2026 Dust Store Promo',
     SDK: 'Store Draft Kit',
     ALE: 'Arthurian Legends',
     DRL: 'Dragonlord',
