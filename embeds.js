@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js';
-import { curiosaSlug, displayPower } from './util.js';
+import { curiosaSlug, displayPower, hasMessageContentIntent } from './util.js';
 
 export const OPEN_QUERY = '((';
 export const CLOSE_QUERY = '))';
@@ -151,12 +151,16 @@ export async function getQueryHelpMessage(api) {
 
         `Place a full, partial, or misspelled card name within double parenthesis, e.g. **${OPEN_QUERY}philosopher${CLOSE_QUERY}** to get the card's stats and a thumbnail image. Text casing or whitespace do not matter. The default card returned is its first printing (Alpha in most cases).\n\n` +
 
-        'There are two ways to send a query:\n\n' +
+        'Two ways to send a query:\n\n' +
 
-        `**Mention ${mention}** anywhere in the message with your query, ex: **${mention} ${OPEN_QUERY}philosopher${CLOSE_QUERY}**\n` +
-        `**Right click any message** (long press on mobile) and pick *Apps → Card Lookup* to look up the queries in a message that didn't mention me\n\n` +
+        // without the Message Content intent we only see messages that
+        // mention the bot, so the help has to ask for the mention
+        (hasMessageContentIntent()
+            ? `**Send it in any message**, ex: **${OPEN_QUERY}philosopher${CLOSE_QUERY}**\n`
+            : `**Mention ${mention}** in the message, ex: **${mention} ${OPEN_QUERY}philosopher${CLOSE_QUERY}**\n`) +
+        `**Right click a message** (long press on mobile) → *Apps → Card Lookup*, to run the queries in someone else's message\n\n` +
 
-        'You can also look up a single card by name with the **/info**, **/img**, **/faq** and **/price** slash commands.\n\n' +
+        'Single cards also work with the **/info**, **/img**, **/faq** and **/price** commands.\n\n' +
 
         'The following commands can also be placed within the parenthesis *before* the card name:\n\n' +
 

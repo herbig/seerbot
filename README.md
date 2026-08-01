@@ -6,7 +6,11 @@ The bot scans messages for the pattern `((CARD NAME))` and responds with details
 To add the bot to a discord server you administer use [this join link](https://fourcores.xyz/bot)
 
 ## Privileged intents
-The bot deliberately uses **no [privileged intents](https://docs.discord.com/developers/gateway#privileged-intents)**. Discord sends message content without the *Message Content* intent when the app is mentioned, and for the message a [message context menu command](https://docs.discord.com/developers/interactions/application-commands#message-commands) is used on, which is why lookups are limited to those two paths. Don't add `GatewayIntentBits.MessageContent` back to [discord_bot.js](discord_bot.js) — passively scanning every message is the use case Discord's [intent review](https://docs.discord.com/developers/gateway/getting-started-with-privileged-intent-review) rejects.
+The bot runs with **no [privileged intents](https://docs.discord.com/developers/gateway#privileged-intents)** by default, and never requires one.
+
+Discord sends message content without the *Message Content* intent when the app is mentioned, and for the message a [message context menu command](https://docs.discord.com/developers/interactions/application-commands#message-commands) is used on, so those two paths carry card lookup on their own.
+
+Setting `MESSAGE_CONTENT_INTENT=true` additionally requests the intent, which restores passively scanning every visible message for `((card name))`. Only turn it on if the developer portal actually grants it — **requesting an intent the app doesn't have closes the gateway with [4014 `Disallowed intent(s)`](https://docs.discord.com/developers/topics/opcodes-and-status-codes#gateway-gateway-close-event-codes) and the bot won't connect at all.** The portal grants it freely below 10,000 users; above that it needs [review](https://docs.discord.com/developers/gateway/getting-started-with-privileged-intent-review), which passive scanning is unlikely to pass, since Discord treats the context menu command as the supported alternative.
 
 ## Dev setup
 For local dev run:
@@ -28,6 +32,9 @@ NODE_ENV='dev'
 DEV_DISCORD_ID={discord id}
 # whether to register slash commands on startup
 REGISTER_COMMANDS=true
+# whether to request the Message Content privileged intent, see above.
+# omit or set to anything but 'true' to run without it
+MESSAGE_CONTENT_INTENT=false
 ```
 
 Commands are only registered with Discord when `REGISTER_COMMANDS` is `true`, so it needs to be set for one startup after any change to `COMMANDS` in [slash_commands.js](slash_commands.js).

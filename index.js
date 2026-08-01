@@ -22,11 +22,10 @@ discord.onNewMessage(async msg => {
     // if it's a bot message, don't do anything
     if (msg.author.bot) return;
 
-    // The app has no Message Content intent, so Discord only fills in
+    // Unless the app has the Message Content intent, Discord only fills in
     // msg.content for messages that @mention it.  Everything else arrives
-    // with empty content and simply produces no matches below.  Queries in
-    // messages that don't mention the app are handled by the "Card Lookup"
-    // message context menu command instead.
+    // with empty content and simply produces no matches below, and is left
+    // to the "Card Lookup" message context menu command instead.
 
     // detect ((help)) query and respond with the help message
     // this will ignore other card queries and only respond with help

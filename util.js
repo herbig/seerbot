@@ -1,3 +1,18 @@
+/**
+ * Whether to request Discord's Message Content privileged intent, which is
+ * only granted above 10,000 users after a review that passive card lookup is
+ * unlikely to pass.  The bot works either way: without the intent Discord
+ * still sends the content of messages that @mention it, and of the message a
+ * message context menu command is used on, so this only controls whether
+ * ((card name)) queries are *also* picked up passively.  See the README.
+ *
+ * Read at call time rather than module scope, since imports are evaluated
+ * before index.js gets to run dotenv.config().
+ */
+export function hasMessageContentIntent() {
+    return process.env.MESSAGE_CONTENT_INTENT === 'true';
+}
+
 export function chunkArray(arr, chunkSize) {
     let result = [];
     for (let i = 0; i < arr.length; i += chunkSize) {

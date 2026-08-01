@@ -1,4 +1,5 @@
 import { REST, Routes, Client, Events, GatewayIntentBits } from 'discord.js';
+import { hasMessageContentIntent } from './util.js';
 
 /**
  * A light wrapper that manages interactions with Discord.
@@ -8,17 +9,21 @@ export class DiscordBot {
     #client;
 
     constructor(analytics, botToken, clientId, commands, commandHandler) {
-        this.#client = new Client({
-            // No privileged intents.  Without MessageContent, Discord still
-            // sends us the content of messages that @mention the app, and the
-            // content of the message a message context menu command is used on,
-            // which is everything the card lookup needs.
-            // https://docs.discord.com/developers/events/gateway#message-content-intent
-            intents: [
-                GatewayIntentBits.Guilds,
-                GatewayIntentBits.GuildMessages,
-            ]
-        });
+        const intents = [
+            GatewayIntentBits.Guilds,
+            GatewayIntentBits.GuildMessages,
+        ];
+
+        // Only ask for the privileged intent when the developer portal has
+        // actually granted it.  Requesting an intent we don't have doesn't
+        // degrade the bot, it closes the gateway with 4014 "Disallowed
+        // intent(s)" and the bot never connects at all.
+        // https://docs.discord.com/developers/events/gateway#message-content-intent
+        if (hasMessageContentIntent()) {
+            intents.push(GatewayIntentBits.MessageContent);
+        }
+
+        this.#client = new Client({ intents: intents });
         this.#client.login(botToken);
 
         // set up slash commands
