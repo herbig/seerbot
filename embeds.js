@@ -155,7 +155,9 @@ export async function getQueryHelpMessage(api) {
 
         setsList + '\n\n' +
 
-        `Please ping <@${process.env.DEV_DISCORD_ID}> with any feedback or issues!`;
+        `Please ping <@${process.env.DEV_DISCORD_ID}> with any feedback or issues!\n\n` +
+
+        '*[Privacy Policy](<https://fourcores.xyz/privacy>) · [Terms of Service](<https://fourcores.xyz/tos>)*';
 }
 
 const FC_CARD_URL = 'https://fourcores.xyz/card/';
