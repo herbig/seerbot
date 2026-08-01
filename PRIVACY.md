@@ -1,19 +1,20 @@
 # Privacy Policy
 
-Last updated: 7/18/24
+The privacy policy and terms of service for Four Cores — covering both the app
+and this Discord bot — are published at:
 
-*Four Cores*
+- **https://fourcores.xyz/privacy**
+- **https://fourcores.xyz/tos**
 
-# Introduction
+Those pages are the authoritative versions; this file is only a pointer.
 
-This Privacy Policy explains how we handle your personal information when you use our app. By using Four Cores, you agree to the terms of this Privacy Policy.
+## Short version, for anyone reading the source
 
-# Information Collection and Use
+- The bot has **no database** and writes nothing to disk. Message text is read
+  only to spot `(( ))` card queries, used to look up a card, and discarded.
+- It does **not** read or record Discord user IDs, usernames, or server names.
+- Usage and error events go to Sentry. They carry the command used and the
+  **card the query resolved to** — never the text you typed. See the allowlist
+  in [`analytics.js`](analytics.js).
 
-No Data Collection
-
-Four Cores does not collect, store, or share any personal data from its users. We do not track any information about your usage of the app, your device, or any other personal details. Our app is designed to function without requiring any user data.
-
-Third-Party Services
-
-Four Cores does not use any third-party services that collect or process user data.
+Questions: michael@herbig.dev

@@ -52,14 +52,21 @@ export function commandHandler(fuzzySearch, api, analytics) {
         const query = interaction.options.getString(OPTION_NAME);
         const isPublicMessage = interaction.guild !== null;
 
-        analytics.logCommand(commandName, { query: query, ephemeral: isPublicMessage });
-
         if (commandName === Command.HELP) {
+            analytics.logCommand(commandName, { ephemeral: isPublicMessage });
             interaction.reply({ content: await getQueryHelpMessage(api), ephemeral: isPublicMessage });
             return;
         }
 
         const cardName = fuzzySearch.search(query);
+
+        // Logged after the search so the event carries the card the query
+        // resolved to, rather than the text the user typed.
+        analytics.logCommand(commandName, {
+            cardName: cardName,
+            matched: cardName !== undefined,
+            ephemeral: isPublicMessage,
+        });
 
         let embed;
 
