@@ -21,18 +21,21 @@ export class QueryMatcher {
     }
 
     /**
-     * Gets a list of query matches within the given Discord message.
-     * Matches include a queryCode, representing a special character for 
+     * Gets a list of query matches within the given Discord message text.
+     * Matches include a queryCode, representing a special character for
      * a specific function (such as ? for card rulings), the query itself,
      * and the cardName matching the query (or undefined if there is no match).
-     * 
+     *
      * @param {string} discordMsg the full text of the incoming Discord message
      * @returns An array of matches, in the form [{ queryCode, query, cardName }]
      */
     getMatches(discordMsg) {
 
+        // messages the app can't read the content of come through empty
+        if (!discordMsg) return [];
+
         // match on the pattern ((SOME TEXT))
-        const matches = discordMsg.content.match(/\(\((.*?)\)\)/g);
+        const matches = discordMsg.match(/\(\((.*?)\)\)/g);
 
         const cardQueries = [];
     

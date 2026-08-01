@@ -16,6 +16,12 @@ export function noSuchCardEmbed(query) {
         .setColor(Color.FAIL);
 }
 
+export function noQueryEmbed() {
+    return new EmbedBuilder()
+        .setDescription(`No ${OPEN_QUERY}card name${CLOSE_QUERY} query found in that message.`)
+        .setColor(Color.FAIL);
+}
+
 export function noSuchSetEmbed(setCode) {
     return new EmbedBuilder()
         .setDescription(`\"${setCode}\" is not a valid set code.`)
@@ -136,12 +142,21 @@ export async function getQueryHelpMessage(api) {
         .map(set => `**${set.setCode}** — ${set.displayName}`)
         .join('\n');
 
+    const mention = `<@${process.env.BOT_CLIENT_ID}>`;
+
     return '‎\n' + // empty space to create a line break that won't be trimmed by Discord
         '**Four Cores Sorcery Card Lookup**\n\n' +
 
         'Check out the [mobile app](<https://fourcores.xyz/install>) for more helpful tools!\n\n' +
 
         `Place a full, partial, or misspelled card name within double parenthesis, e.g. **${OPEN_QUERY}philosopher${CLOSE_QUERY}** to get the card's stats and a thumbnail image. Text casing or whitespace do not matter. The default card returned is its first printing (Alpha in most cases).\n\n` +
+
+        'There are two ways to send a query:\n\n' +
+
+        `**Mention ${mention}** anywhere in the message with your query, ex: **${mention} ${OPEN_QUERY}philosopher${CLOSE_QUERY}**\n` +
+        `**Right click any message** (long press on mobile) and pick *Apps → Card Lookup* to look up the queries in a message that didn't mention me\n\n` +
+
+        'You can also look up a single card by name with the **/info**, **/img**, **/faq** and **/price** slash commands.\n\n' +
 
         'The following commands can also be placed within the parenthesis *before* the card name:\n\n' +
 

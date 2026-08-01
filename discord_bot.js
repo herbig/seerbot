@@ -9,10 +9,14 @@ export class DiscordBot {
 
     constructor(analytics, botToken, clientId, commands, commandHandler) {
         this.#client = new Client({
+            // No privileged intents.  Without MessageContent, Discord still
+            // sends us the content of messages that @mention the app, and the
+            // content of the message a message context menu command is used on,
+            // which is everything the card lookup needs.
+            // https://docs.discord.com/developers/events/gateway#message-content-intent
             intents: [
                 GatewayIntentBits.Guilds,
                 GatewayIntentBits.GuildMessages,
-                GatewayIntentBits.MessageContent,
             ]
         });
         this.#client.login(botToken);
