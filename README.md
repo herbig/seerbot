@@ -25,7 +25,24 @@ NODE_ENV='dev'
 DEV_DISCORD_ID={discord id}
 # whether to register slash commands on startup
 REGISTER_COMMANDS=true
+# key for the fourcores.xyz API (the `seerbot` key — see below)
+FOURCORES_API_KEY={api key}
 ```
+
+## API key
+
+The fourcores.xyz API rejects any request without an `X-API-Key` header, so the
+bot does nothing useful without `FOURCORES_API_KEY` — every lookup 401s and
+comes back empty, which looks a lot like the API being down. It is logged as an
+error on startup for that reason.
+
+seerbot has its own key, separate from the web app's, so either can be rotated
+or revoked without taking the other down. Keys are configured on the API side as
+`name:secret` pairs in its `SORCERY_API_KEYS` config var; seerbot's is the one
+named `seerbot`. Unlike the web app's key — which ships inside a public JS
+bundle and is not a secret — this one only ever lives in the bot's environment,
+so treat it as a real secret: set it in the Heroku config vars, never in the
+repo.
 
 ## Emoji
 Mana and threshold emoji are provided under `resources/emoji`, and `resources/emoji_adjusted`, the adjusted version having bottom padding to properly baseline align them within a Discord embed.  These are already hosted on the FourCores Discord, and should appear.  To host them yourself, add them to your Discord server and update the `ElementEmoji` and `ManaCostEmoji` fields with their ids.

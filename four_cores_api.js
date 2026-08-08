@@ -8,6 +8,17 @@ export class FourCoresAPI {
         this.API = 'https://fourcores.xyz/api';
         // Identifies seerbot in the API's request logs, distinct from browser/other traffic.
         this.userAgent = 'seerbot/1.2.0 (+https://fourcores.xyz)';
+        // The API rejects any request without a valid key. seerbot has its own,
+        // separate from the web app's, so either can be rotated or revoked
+        // without taking the other down. Unlike the web app's key — which ships
+        // in a public bundle and is therefore not a secret — this one only ever
+        // lives in the bot's environment.
+        this.apiKey = process.env.FOURCORES_API_KEY;
+        if (!this.apiKey) {
+            // Every request 401s without it, which otherwise just looks like the
+            // API being down.
+            analytics.logError('API key missing', new Error('FOURCORES_API_KEY is not set'));
+        }
         this.cache = new LRUCache({
             max: 100,
             // 3 hour cache time, since price could change
@@ -43,7 +54,10 @@ export class FourCoresAPI {
 
         try {
             const response = await fetch(url, {
-                headers: { 'User-Agent': this.userAgent }
+                headers: {
+                    'User-Agent': this.userAgent,
+                    ...(this.apiKey ? { 'X-API-Key': this.apiKey } : {})
+                }
             });
 
             if (!response.ok) return undefined;
