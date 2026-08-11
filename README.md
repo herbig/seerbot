@@ -44,14 +44,32 @@ bundle and is not a secret — this one only ever lives in the bot's environment
 so treat it as a real secret: set it in the Heroku config vars, never in the
 repo.
 
+## Two bots
+
+There are two Discord applications sharing this codebase — the live bot and a dev one — and **nothing in the repo distinguishes them.**  The only difference is which `BOT_TOKEN` is in the environment, so the same commands hit different bots depending on where they run:
+
+| | Application id | Token comes from |
+| --- | --- | --- |
+| Live | `1205311766280544346` | Heroku config vars |
+| Dev | `1205910927728451604` | your local `.env` |
+
+The live id is the one in the invite link the site hands out (`fourcores.xyz/bot`).  Anything run on a laptop is talking to the **dev** bot unless you have deliberately arranged otherwise.
+
 ## Avatar
-`resources/avatar.png` is the bot's avatar.  Note that nothing reads it at runtime — the avatar is account state held by Discord, so replacing the file and redeploying changes nothing on its own.  After changing the image, push it once with:
+`resources/avatar.png` is the bot's avatar.  Nothing reads it at runtime — the avatar is account state held by Discord, so replacing the file and redeploying changes nothing on its own.  After changing the image, push it explicitly:
 
 ```
-npm run set-avatar
+npm run set-avatar              # dry run: names the bot it resolved to, changes nothing
+npm run set-avatar -- --yes     # applies it
 ```
 
-That needs `BOT_TOKEN` in the environment.  It is deliberately a one-off rather than something startup does, because Discord rate-limits avatar changes and a crash-looping dyno would throttle itself.
+It always prints the bot's tag and id first, because updating the wrong one of the two applications above is otherwise completely silent.  To hit the **live** bot, run it on the dyno so the production config vars supply the token, rather than copying that token anywhere:
+
+```
+heroku run npm run set-avatar -- --yes --app <app>
+```
+
+It is deliberately a one-off rather than something startup does, because Discord rate-limits avatar changes and a crash-looping dyno would throttle itself.
 
 The image is generated from the app icon master in the `fourcores-homepage` repo (`assets/icon/icon.svg`, via `npm run icons`), so it stays in step with the app and store icons rather than drifting as its own copy.
 
