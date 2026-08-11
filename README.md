@@ -44,5 +44,16 @@ bundle and is not a secret — this one only ever lives in the bot's environment
 so treat it as a real secret: set it in the Heroku config vars, never in the
 repo.
 
+## Avatar
+`resources/avatar.png` is the bot's avatar.  Note that nothing reads it at runtime — the avatar is account state held by Discord, so replacing the file and redeploying changes nothing on its own.  After changing the image, push it once with:
+
+```
+npm run set-avatar
+```
+
+That needs `BOT_TOKEN` in the environment.  It is deliberately a one-off rather than something startup does, because Discord rate-limits avatar changes and a crash-looping dyno would throttle itself.
+
+The image is generated from the app icon master in the `fourcores-homepage` repo (`assets/icon/icon.svg`, via `npm run icons`), so it stays in step with the app and store icons rather than drifting as its own copy.
+
 ## Emoji
 Mana and threshold emoji are provided under `resources/emoji`, and `resources/emoji_adjusted`, the adjusted version having bottom padding to properly baseline align them within a Discord embed.  These are already hosted on the FourCores Discord, and should appear.  To host them yourself, add them to your Discord server and update the `ElementEmoji` and `ManaCostEmoji` fields with their ids.
