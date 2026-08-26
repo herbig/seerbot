@@ -45,7 +45,7 @@ discord.onNewMessage(async msg => {
                 return noSuchSetEmbed(match.setCode);
             } else if (cards === null) {
                 // the card name has no printing in the given (valid) set code
-                return notInSetEmbed(match.cardName, match.setCode);
+                return await notInSetEmbed(match.cardName, match.setCode, api);
             } else {
                 // card list data was retrieved successfully
                
@@ -57,7 +57,7 @@ discord.onNewMessage(async msg => {
                     case QueryCode.RULINGS:
                         return await rulingsEmbed(cards[0], api);
                     case QueryCode.PRICE:
-                        return pricesEmbed(cards); // provide the whole list
+                        return await pricesEmbed(cards, api); // provide the whole list
                     case QueryCode.IMAGE:
                         return imageEmbed(cards[0]);
                     default:

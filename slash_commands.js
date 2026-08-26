@@ -86,7 +86,7 @@ export function commandHandler(fuzzySearch, api, analytics) {
                             embed = await rulingsEmbed(cards[0], api);
                             break;
                         case Command.PRICE:
-                            embed = pricesEmbed(cards);
+                            embed = await pricesEmbed(cards, api);
                             break;
                         case Command.IMAGE:
                             embed = imageEmbed(cards[0]);

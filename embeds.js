@@ -22,9 +22,9 @@ export function noSuchSetEmbed(setCode) {
         .setColor(Color.FAIL);
 }
 
-export function notInSetEmbed(cardName, setCode) {
+export async function notInSetEmbed(cardName, setCode, api) {
     return new EmbedBuilder()
-        .setDescription(`${cardName} not found in \"${SetName[setCode.toUpperCase()]}\".`)
+        .setDescription(`${cardName} not found in \"${await setName(setCode, api)}\".`)
         .setColor(Color.FAIL);
 }
 
@@ -52,7 +52,7 @@ export async function rulingsEmbed(card, api) {
     return embed;
 }
 
-export function pricesEmbed(cards) {
+export async function pricesEmbed(cards, api) {
 
     var description = '';
 
@@ -70,7 +70,7 @@ export function pricesEmbed(cards) {
         }
         
         if (cardPrice !== '') {
-            cardPrice = `**${SetName[card.setCode]}**\n` + cardPrice + '\n';
+            cardPrice = `**${await setName(card.setCode, api)}**\n` + cardPrice + '\n';
         }
 
         description = description + cardPrice;
@@ -139,8 +139,7 @@ export function defaultEmbed(card) {
 
 export async function getQueryHelpMessage(api) {
 
-    const metadata = await api.getMetadata();
-    const sets = metadata.sets;
+    const sets = (await api.getMetadata())?.sets ?? {};
 
     const setsList = Object.values(sets)
         .map(set => `**${set.setCode}** — ${set.displayName}`)
@@ -205,25 +204,25 @@ function accentColor(elements) {
     return Color.GOLD;
 }
 
-const SetName  = Object.freeze({
-    APP: 'Alpha Pledge Pack',
-    APC: 'Alpha Precon',
-    ABT: 'Alpha Box Topper',
-    P22: '2022 Promo',
-    ALP: 'Alpha',
-    BET: 'Beta',
-    BBT: 'Beta Box Topper',
-    P23: '2023 Promo',
-    P24: '2024 Promo',
-    D24: '2024 Dust Store Promo',
-    P25: '2025 Promo',
-    D25: '2025 Dust Store Promo',
-    D26: '2026 Dust Store Promo',
-    SDK: 'Store Draft Kit',
-    ALE: 'Arthurian Legends',
-    DRL: 'Dragonlord',
-    GOT: 'Gothic',
-});
+/**
+ * The display name for a set code, e.g. BMP -> Beta Misprints.
+ *
+ * These come from the API's metadata rather than a table in here, because a
+ * table only stays right until the next set is added: Beta Misprints, 2026
+ * Promos and Gothic Precon all rendered as "undefined" in price lookups, and
+ * the promo sets had drifted to the wrong name, before this was hoisted out.
+ * The metadata request is cached alongside every other API call, so this does
+ * not hit the network per card.
+ */
+async function setName(setCode, api) {
+    const sets = (await api.getMetadata())?.sets ?? {};
+    const code = setCode?.toUpperCase();
+
+    // Fall back to the bare code, which is still recognisable if the set really
+    // is unknown or the metadata request failed. The point is that nothing here
+    // can put the word 'undefined' in front of a user again.
+    return sets[code]?.displayName ?? code;
+}
 
 const ManaCostEmoji = [
     '<:m_00:1215045479126016111>',
