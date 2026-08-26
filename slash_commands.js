@@ -52,50 +52,64 @@ export function commandHandler(fuzzySearch, api, analytics) {
         const query = interaction.options.getString(OPTION_NAME);
         const isPublicMessage = interaction.guild !== null;
 
-        if (commandName === Command.HELP) {
-            analytics.logCommand(commandName, { ephemeral: isPublicMessage });
-            interaction.reply({ content: await getQueryHelpMessage(api), ephemeral: isPublicMessage });
-            return;
-        }
+        try {
+            if (commandName === Command.HELP) {
+                analytics.logCommand(commandName, { ephemeral: isPublicMessage });
+                await interaction.reply({ content: await getQueryHelpMessage(api), ephemeral: isPublicMessage });
+                return;
+            }
 
-        const cardName = fuzzySearch.search(query);
+            const cardName = fuzzySearch.search(query);
 
-        // Logged after the search so the event carries the card the query
-        // resolved to, rather than the text the user typed.
-        analytics.logCommand(commandName, {
-            cardName: cardName,
-            matched: cardName !== undefined,
-            ephemeral: isPublicMessage,
-        });
+            // Logged after the search so the event carries the card the query
+            // resolved to, rather than the text the user typed.
+            analytics.logCommand(commandName, {
+                cardName: cardName,
+                matched: cardName !== undefined,
+                ephemeral: isPublicMessage,
+            });
 
-        let embed;
+            let embed;
 
-        if (cardName === undefined) {
-            embed = noSuchCardEmbed(query);
-        } else {
-            const cards = await api.getCards(cardName, undefined, commandName === Command.PRICE);
-
-            if (!cards) {
-                // unknown api error
-                embed = generalErrorEmbed();
-                analytics.logError('api error during command ' + commandName);
+            if (cardName === undefined) {
+                embed = noSuchCardEmbed(query);
             } else {
-                switch(commandName) {
-                    case Command.FAQ:
-                        embed = await rulingsEmbed(cards[0], api);
-                        break;
-                    case Command.PRICE:
-                        embed = pricesEmbed(cards);
-                        break;
-                    case Command.IMAGE:
-                        embed = imageEmbed(cards[0]);
-                        break;
-                    default:
-                        embed = defaultEmbed(cards[0]);
-                        break;
+                const cards = await api.getCards(cardName, undefined, commandName === Command.PRICE);
+
+                if (!cards) {
+                    // unknown api error
+                    embed = generalErrorEmbed();
+                    analytics.logError('api error during command ' + commandName);
+                } else {
+                    switch(commandName) {
+                        case Command.FAQ:
+                            embed = await rulingsEmbed(cards[0], api);
+                            break;
+                        case Command.PRICE:
+                            embed = pricesEmbed(cards);
+                            break;
+                        case Command.IMAGE:
+                            embed = imageEmbed(cards[0]);
+                            break;
+                        default:
+                            embed = defaultEmbed(cards[0]);
+                            break;
+                    }
                 }
             }
+            await interaction.reply({ embeds: [embed], ephemeral: isPublicMessage });
+        } catch (error) {
+            // Same containment as the ((query)) path in index.js. Anything
+            // thrown above would otherwise reject this handler and leave the
+            // interaction unanswered, which Discord shows as "The application
+            // did not respond" and which never reaches Sentry.
+            analytics.logError('command ' + commandName + ' failed', error);
+
+            // If the reply itself is what failed, there is nothing left to say.
+            if (interaction.replied || interaction.deferred) return;
+
+            interaction.reply({ embeds: [generalErrorEmbed()], ephemeral: isPublicMessage })
+                .catch(replyError => analytics.logError('failed to send error reply', replyError));
         }
-        interaction.reply({ embeds: [embed], ephemeral: isPublicMessage });
     };
 }

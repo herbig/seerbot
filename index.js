@@ -1,4 +1,4 @@
-import { getQueryHelpMessage, noSuchSetEmbed, noSuchCardEmbed, defaultEmbed, imageEmbed, notInSetEmbed, pricesEmbed, rulingsEmbed, CLOSE_QUERY, OPEN_QUERY } from './embeds.js';
+import { generalErrorEmbed, getQueryHelpMessage, noSuchSetEmbed, noSuchCardEmbed, defaultEmbed, imageEmbed, notInSetEmbed, pricesEmbed, rulingsEmbed, CLOSE_QUERY, OPEN_QUERY } from './embeds.js';
 import { commandHandler, COMMANDS } from './slash_commands.js';
 import { QueryCode, QueryMatcher } from './query_matcher.js';
 import { FuzzyCardSearch } from './fuzzy_search.js';
@@ -65,7 +65,14 @@ discord.onNewMessage(async msg => {
                 }
             }
         }
-    });
+    }).map(embedPromise => embedPromise.catch(error => {
+        // Keep one unbuildable embed contained. Rejecting here would reject the
+        // Promise.all below, which drops every *other* card in the same message
+        // along with it and reports nothing at all — from the channel that is
+        // indistinguishable from the bot having ignored the message.
+        analytics.logError('embed build failed', error);
+        return generalErrorEmbed();
+    }));
 
     // if the only query was empty (()), this would be 0
     if (embedPromises.length > 0) {
@@ -75,7 +82,8 @@ discord.onNewMessage(async msg => {
         for (const chunck of chunked) {
             // wait for all promises to resolve then send embeds
             Promise.all(chunck).then(embeds => {
-                msg.channel.send({ embeds: embeds });
+                msg.channel.send({ embeds: embeds })
+                    .catch(error => analytics.logError('failed to send embeds', error));
             });
         }
     }

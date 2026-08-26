@@ -102,9 +102,18 @@ export function imageEmbed(card) {
 }
 
 export function defaultEmbed(card) {
-    const title = card.name + '  ' + 
-        costEmoji(card.manaCost) + 
-        thresholdText(card.threshold);
+    const symbols = costEmoji(card.manaCost) + thresholdText(card.threshold);
+    const titleWithSymbols = card.name + '  ' + symbols;
+
+    // A custom emoji costs ~30 characters of markup even though it renders as a
+    // single glyph, so a card carrying enough symbols overruns Discord's title
+    // limit and the entire message is rejected. Armageddon — two thresholds of
+    // every element, on top of a two digit mana cost — is the only card that
+    // does today, at 273 characters. Move its symbols onto their own line above
+    // the description rather than truncating them, since which symbols a card
+    // needs is the whole point of looking it up.
+    const symbolsFitInTitle = titleWithSymbols.length <= MAX_TITLE_LENGTH;
+    const title = symbolsFitInTitle ? titleWithSymbols : card.name;
 
     const power = displayPower(card)
 
@@ -112,6 +121,7 @@ export function defaultEmbed(card) {
     // This only currently impacts Azuridge Caravan, which in the 
     // database has all available minion subtypes
     const description = 
+        (symbolsFitInTitle ? '' : symbols + '\n') +
         '**' + startCase(card.rarity) + ' — ' + startCase(card.category) + 
             (card.types.length > 0 ? ' — ' + card.types.map(s => startCase(s)).join(' ') : '') + 
             (card.subtypes.length === 1 ? ' — ' + startCase(card.subtypes[0]) : '') + '**\n' +
@@ -161,6 +171,9 @@ export async function getQueryHelpMessage(api) {
 }
 
 const FC_CARD_URL = 'https://fourcores.xyz/card/';
+
+// Discord rejects an embed outright if its title is longer than this.
+const MAX_TITLE_LENGTH = 256;
 
 function formatUSD(amount) {
     return "$" + amount.toFixed(2).replace(/\.00$/, '');
