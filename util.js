@@ -8,9 +8,10 @@ export function chunkArray(arr, chunkSize) {
 }
 
 /**
- * Normalize a given string to the same identifier format that curiosa.io uses.
+ * Normalize a given string to the same card-slug format the official site
+ * (sorcerytcg.com, formerly curiosa.io) and the Four Cores rulings API use.
  */
-export function curiosaSlug(name) {
+export function cardSlug(name) {
     return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove accents, such as Ä
         .toLowerCase()                                           // lowercase it
         .replace(/[\s\-]+/g, '_')                                // Replace spaces or dashes with underscores

@@ -1,5 +1,5 @@
 import { EmbedBuilder } from 'discord.js';
-import { curiosaSlug, displayPower } from './util.js';
+import { cardSlug, displayPower } from './util.js';
 
 export const OPEN_QUERY = '((';
 export const CLOSE_QUERY = '))';
@@ -34,7 +34,7 @@ export async function rulingsEmbed(card, api) {
         .setThumbnail(imgURL(card))
         .setURL(FC_CARD_URL + encodeURIComponent(card.name));
 
-    const rulings = await api.getRulings(curiosaSlug(card.name))
+    const rulings = await api.getRulings(cardSlug(card.name))
     let description = '';
 
     if (rulings === null || rulings.length === 0) {
@@ -155,7 +155,7 @@ export async function getQueryHelpMessage(api) {
         'The following commands can also be placed within the parenthesis *before* the card name:\n\n' +
 
         `**!** — for a larger image, ex: **${OPEN_QUERY}!death dealer${CLOSE_QUERY}**\n` +
-        `**?** — for official FAQ rulings on the card, from *[curiosa.io](<https://curiosa.io/faqs>)*, ex: **${OPEN_QUERY}?enchantress${CLOSE_QUERY}**\n` +
+        `**?** — for official FAQ rulings on the card, from *[sorcerytcg.com](<https://sorcerytcg.com/cards>)*, ex: **${OPEN_QUERY}?enchantress${CLOSE_QUERY}**\n` +
         `**$** — to get the *[tcgplayer.com](<https://www.tcgplayer.com/categories/trading-and-collectible-card-games/sorcery-contested-realm/price-guides>)* lowest listed price, if available, ex: **${OPEN_QUERY}$ruby core${CLOSE_QUERY}**\n\n` +
 
         `You can also place a "set code" after a *pipe* character *after* the card name to specify which set you would like, as in **${OPEN_QUERY}critical strike | abt${CLOSE_QUERY}**.\n\n` +
