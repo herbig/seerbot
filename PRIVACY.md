@@ -3,8 +3,8 @@
 The privacy policy and terms of service for Four Cores — covering both the app
 and this Discord bot — are published at:
 
-- **https://fourcores.xyz/privacy**
-- **https://fourcores.xyz/tos**
+- **https://fourcores.gg/privacy**
+- **https://fourcores.gg/tos**
 
 Those pages are the authoritative versions; this file is only a pointer.
 

@@ -1,13 +1,13 @@
 import { LRUCache } from 'lru-cache';
 
 /**
- * Handles REST requests to the fourcores.xyz API.
+ * Handles REST requests to the fourcores.gg API.
  */
 export class FourCoresAPI {
     constructor(analytics) {
-        this.API = 'https://fourcores.xyz/api';
+        this.API = 'https://fourcores.gg/api';
         // Identifies seerbot in the API's request logs, distinct from browser/other traffic.
-        this.userAgent = 'seerbot/1.2.0 (+https://fourcores.xyz)';
+        this.userAgent = 'seerbot/1.2.0 (+https://fourcores.gg)';
         // The API rejects any request without a valid key. seerbot has its own,
         // separate from the web app's, so either can be rotated or revoked
         // without taking the other down. Unlike the web app's key — which ships

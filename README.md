@@ -3,7 +3,7 @@ A Discord bot inspired by [MTG Scryfall](https://scryfall.com/docs/discord-bot),
 
 The bot scans new messages for the pattern `((CARD NAME))` and responds with details about the card, if the text is a valid Sorcery card name.
 
-To add the bot to a discord server you administer use [this join link](https://fourcores.xyz/bot)
+To add the bot to a discord server you administer use [this join link](https://fourcores.gg/bot)
 
 ## Dev setup
 For local dev run:
@@ -25,13 +25,13 @@ NODE_ENV='dev'
 DEV_DISCORD_ID={discord id}
 # whether to register slash commands on startup
 REGISTER_COMMANDS=true
-# key for the fourcores.xyz API (the `seerbot` key — see below)
+# key for the fourcores.gg API (the `seerbot` key — see below)
 FOURCORES_API_KEY={api key}
 ```
 
 ## API key
 
-The fourcores.xyz API rejects any request without an `X-API-Key` header, so the
+The fourcores.gg API rejects any request without an `X-API-Key` header, so the
 bot does nothing useful without `FOURCORES_API_KEY` — every lookup 401s and
 comes back empty, which looks a lot like the API being down. It is logged as an
 error on startup for that reason.
@@ -53,7 +53,7 @@ There are two Discord applications sharing this codebase — the live bot and a 
 | Live | `1205311766280544346` | Heroku config vars |
 | Dev | `1205910927728451604` | your local `.env` |
 
-The live id is the one in the invite link the site hands out (`fourcores.xyz/bot`).  Anything run on a laptop is talking to the **dev** bot unless you have deliberately arranged otherwise.
+The live id is the one in the invite link the site hands out (`fourcores.gg/bot`).  Anything run on a laptop is talking to the **dev** bot unless you have deliberately arranged otherwise.
 
 ## Avatar
 `resources/avatar.png` is the bot's avatar.  Nothing reads it at runtime — the avatar is account state held by Discord, so replacing the file and redeploying changes nothing on its own.  After changing the image, push it explicitly:

@@ -6,7 +6,7 @@ import * as Sentry from "@sentry/node"
  * Usage events exist to answer "which cards get looked up, how", so they carry
  * the *resolved* card name and never the text the user typed. The filter lives
  * here rather than at the call sites so that a new caller cannot reintroduce
- * raw message content by accident — see https://fourcores.xyz/privacy.
+ * raw message content by accident — see https://fourcores.gg/privacy.
  */
 const ALLOWED_EVENT_KEYS = ['queryCode', 'cardName', 'setCode', 'matched', 'ephemeral'];
 

@@ -148,7 +148,7 @@ export async function getQueryHelpMessage(api) {
     return '‎\n' + // empty space to create a line break that won't be trimmed by Discord
         '**Four Cores Sorcery Card Lookup**\n\n' +
 
-        'Check out the [mobile app](<https://fourcores.xyz/install>) for more helpful tools!\n\n' +
+        'Check out the [mobile app](<https://fourcores.gg/install>) for more helpful tools!\n\n' +
 
         `Place a full, partial, or misspelled card name within double parenthesis, e.g. **${OPEN_QUERY}philosopher${CLOSE_QUERY}** to get the card's stats and a thumbnail image. Text casing or whitespace do not matter. The default card returned is its first printing (Alpha in most cases).\n\n` +
 
@@ -166,10 +166,10 @@ export async function getQueryHelpMessage(api) {
 
         `Please ping <@${process.env.DEV_DISCORD_ID}> with any feedback or issues!\n\n` +
 
-        '*[Privacy Policy](<https://fourcores.xyz/privacy>) · [Terms of Service](<https://fourcores.xyz/tos>)*';
+        '*[Privacy Policy](<https://fourcores.gg/privacy>) · [Terms of Service](<https://fourcores.gg/tos>)*';
 }
 
-const FC_CARD_URL = 'https://fourcores.xyz/card/';
+const FC_CARD_URL = 'https://fourcores.gg/card/';
 
 // Discord rejects an embed outright if its title is longer than this.
 const MAX_TITLE_LENGTH = 256;
