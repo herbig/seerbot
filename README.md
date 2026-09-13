@@ -1,7 +1,7 @@
 # Four Cores Discord Bot
 A Discord bot inspired by [MTG Scryfall](https://scryfall.com/docs/discord-bot), to quickly get [Sorcery TCG](https://sorcerytcg.com/) card details in Discord.
 
-The bot scans new messages for the pattern `((CARD NAME))` and responds with details about the card, if the text is a valid Sorcery card name.
+The bot scans new messages for the pattern `((CARD NAME))` and responds with details about the card, if the text is a valid Sorcery card name. The rules text shown is the card's **current official wording** (errata included), as served by the fourcores.gg API's `/v2/cards`; what a given printing physically printed is available on the lookup result as `printedRulesText` but not displayed.
 
 To add the bot to a discord server you administer use [this join link](https://fourcores.gg/bot)
 

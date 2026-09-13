@@ -11,8 +11,11 @@ dotenv.config();
 
 const analytics = new Analytics();
 const api = new FourCoresAPI(analytics);
-const allCards = await api.getAllCards()
-const fuzzySearch = new FuzzyCardSearch(allCards.map(card => card.name));
+// One entry per card name (the v2 catalog); also primes the official rules
+// text getCards lays over every lookup. A failure here fails the boot, on
+// purpose: a bot with no name index would answer nothing and look healthy.
+const catalog = await api.getAllCards()
+const fuzzySearch = new FuzzyCardSearch(catalog.map(card => card.name));
 const discord = new DiscordBot(analytics, process.env.BOT_TOKEN, process.env.BOT_CLIENT_ID, COMMANDS, commandHandler(fuzzySearch, api, analytics));
 const queryMatcher = new QueryMatcher(fuzzySearch);
 
